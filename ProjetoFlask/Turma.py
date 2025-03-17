@@ -35,7 +35,7 @@ def apiTurma():
     metodo = request.method
 
 
-    if metodo == "GET": # http://127.0.0.1:5000/turma ou http://
+    if metodo == "GET": # http://127.0.0.1:5000/turma 
         id_turma = request.args.get('id')
         if id_turma:
             for turma in turma_db:
@@ -55,9 +55,6 @@ def apiTurma():
         turno = request.args.get('turno')  
         professor_id = request.args.get('professor_id')
 
-        if not nome or not turno or not professor_id:
-            return {"erro":"Dados inválidos",
-                    "code": 400}, 
 
         turma_db.append(
             {
