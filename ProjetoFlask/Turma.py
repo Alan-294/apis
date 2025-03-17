@@ -88,7 +88,11 @@ def apiTurma():
         nome = request.args.get('nome')  
         turno = request.args.get('turno')  
         professor_id = request.args.get('professor_id')
-        posicao = next((i for i, turma in enumerate(turma_db) if turma["id"] == id_turma), -1)
+        posicao = -1
+        for turma in turma_db:
+            posicao += 1
+            if turma['id'] == int(id_turma):
+                break               
         turma_db[posicao] = {
             "id": int(id_turma),
             "nome": nome,
