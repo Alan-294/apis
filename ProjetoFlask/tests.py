@@ -7,8 +7,9 @@ class TestProduct(unittest.TestCase):
     def test001(self):
         self.assertTrue(True)
 
-# 10 testes 
-    
+                    ########################
+                    #### Teste Turmas #####
+                    ########################
 
     # Teste 001: Verificar se a rota /turma está funcionando
     def teste001(self):
@@ -34,7 +35,6 @@ class TestProduct(unittest.TestCase):
     def teste003(self):
         r = requests.get('http://127.0.0.1:5000/turma?id=2000') 
         dados = r.json()
-        print(dados)
         self.assertEqual(dados['turma']['id'], 2000, "Erro ID não encontrado")
 
         
@@ -50,7 +50,6 @@ class TestProduct(unittest.TestCase):
         r = requests.post('http://127.0.0.1:5000/turma?nome=ads2&turno=noite&professor_id=3000')
         dados = r.json()     
         id = dados['turma_adicionada']['id']['id']
-        #print(id)
         r2 = requests.get(f'http://127.0.0.1:5000/turma?id={id}')
         dados2 = r2.json()
         self.assertEqual(dados2['turma']['id'], id, "Erro ao adicionar turma")
@@ -59,17 +58,14 @@ class TestProduct(unittest.TestCase):
     # teste 006: PUT - Validar se está editando uma turma
     def teste006(self):
         dados2 = self.teste005()
-        #print(dados2)
         
         r = requests.put(f'http://127.0.0.1:5000/turma?id={dados2['turma']['id']}&nome=Nome(alterado)&turno=Noite&professor_id=13')
 
         dados3 = self.teste001()
-        #print(dados3) 
         
         for listaTurmas in dados3['turmas']:
 
             if listaTurmas['id'] == dados2['turma']['id']:
-                #print(listaTurmas)
                 self.assertEqual(listaTurmas['nome'], 'Nome(alterado)', "Erro ao editar turma")
 
 
@@ -89,7 +85,9 @@ class TestProduct(unittest.TestCase):
             self.assertTrue(True)
         else:
             self.fail("Erro ao excluir turma")
+        
 
 
 if __name__ == '__main__':
     unittest.main()
+    
