@@ -98,7 +98,7 @@ def apiTurma():
         }
         return {"message" : "Turma atualizada com sucesso",
                 "code": 200,
-                "turma_atualizada": turma_db[int(posicao)]}
+               }
         
 
 if __name__ == '__main__':
