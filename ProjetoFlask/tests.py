@@ -7,7 +7,6 @@ class TestProduct(unittest.TestCase):
     def test001(self):
         self.assertTrue(True)
 
-# 10 testes 
     
 
     # Teste 001: Verificar se a rota /turma está funcionando
@@ -34,7 +33,7 @@ class TestProduct(unittest.TestCase):
     def teste003(self):
         r = requests.get('http://127.0.0.1:5000/turma?id=2000') 
         dados = r.json()
-        print(dados)
+        #print(dados)
         self.assertEqual(dados['turma']['id'], 2000, "Erro ID não encontrado")
 
         
@@ -58,20 +57,16 @@ class TestProduct(unittest.TestCase):
     
     # teste 006: PUT - Validar se está editando uma turma
     def teste006(self):
-        dados2 = self.teste005()
-        #print(dados2)
-        
-        r = requests.put(f'http://127.0.0.1:5000/turma?id={dados2['turma']['id']}&nome=Nome(alterado)&turno=Noite&professor_id=13')
-
-        dados3 = self.teste001()
-        #print(dados3) 
-        
-        for listaTurmas in dados3['turmas']:
-
-            if listaTurmas['id'] == dados2['turma']['id']:
-                #print(listaTurmas)
-                self.assertEqual(listaTurmas['nome'], 'Nome(alterado)', "Erro ao editar turma")
-
+        novaTurma = self.teste005()
+        r = requests.put(f'http://127.0.0.1:5000/turma?id={novaTurma["turma"]["id"]}&nome=ads2(alterado)&turno=Noite&professor_id=13')
+        pegaTurma = ''
+        listaTurma = self.teste001()
+        for turma in listaTurma['turmas']:
+           if turma['id'] == novaTurma["turma"]["id"]:
+               pegaTurma = turma
+               break
+        #print(pegaTurma)
+        self.assertEqual(int(pegaTurma["professor_id"]), 13, "Erro ao alterar turma")
 
     # teste 007: DELETE - Validar se está excluindo uma turma
     def teste007(self):
