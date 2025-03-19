@@ -33,9 +33,9 @@ class TestProduct(unittest.TestCase):
     # teste 003: GeT com id - Validar se estar retornando turma com uma id valida
 
     def teste003(self):
-        r = requests.get('http://127.0.0.1:5000/api/turma?id=2000') 
+        r = requests.get('http://127.0.0.1:5000/api/turma?id=1') 
         dados = r.json()
-        self.assertEqual(dados['turma']['id'], 2000, "Erro ID não encontrado")
+        self.assertEqual(dados["turma"]["id"], 1, "Erro ID não encontrado")
 
         
     # teste 004: GET com id - Validar se estar retornando turma com um id especifico que não existe
