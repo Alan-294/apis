@@ -12,7 +12,8 @@ turma_db = [
     "id": 2000,
     "nome": "ADS3",
     "turno": "manha",
-    "professor_id": 12345
+    "professor_id": 12345,
+    "ativo": True
   }
 ]
 
@@ -61,7 +62,8 @@ def apiTurma():
                 "id": gerar_id(),
                 "nome": nome,
                 "turno": turno,
-                "professor_id": professor_id
+                "professor_id": professor_id,
+                "ativo": True
             }
         )
         return {"message": "Turma adicionada com sucesso",
@@ -94,7 +96,8 @@ def apiTurma():
             "id": int(id_turma),
             "nome": nome,
             "turno": turno,
-            "professor_id": professor_id
+            "professor_id": professor_id,
+            "ativo": True
         }
         return {"message" : "Turma atualizada com sucesso",
                 "code": 200,
