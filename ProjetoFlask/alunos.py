@@ -17,7 +17,16 @@ alunos_db = [
         "nota_segundo_semestre": 8.0,
         "turma_id": 6,
         "mediaFinal": 9
-    }
+    },
+     {
+        "id": 3029,
+        "nome": "André Augusto",
+        "data_nascimento": "1998-09-05",
+        "nota_primeiro_semestre": 8.0,
+        "nota_segundo_semestre": 6.0,
+        "turma_id": 6,
+        "mediaFinal": 7
+    },
 ]
 
 
@@ -25,7 +34,7 @@ alunos_db = [
 @app.route('/api/alunos', methods=['POST'])
 #Caminho do método POST 
 #http://127.0.0.1:5000/api/alunos
-#Enviar dados pelo Postman em formato Jason como no campo abaixo:
+#Enviar dados pelo Postman em formato Json como no campo abaixo:
 #"aluno":{
 #"nome": "Jonas Padro",
 #"data_nascimento": "2008-01-01",
@@ -33,10 +42,8 @@ alunos_db = [
 #"nota_segundo_semestre": 8.0,
 #"turma_id": 6
 #}
+#NÃO INSERIR O ID DO ALUNO JUNTO DO JSON
 
-
-#Caminho do método GET para todos os alunos
-#http://127.0.0.1:5000/api/alunos
 
 def cria_aluno():
 
@@ -50,6 +57,8 @@ def cria_aluno():
     return jsonify(aluno)
     
 
+#Caminho do método GET para todos os alunos
+#http://127.0.0.1:5000/api/alunos
 
 @app.route('/api/alunos', methods=['GET'])
 def consulta_alunos():
@@ -81,6 +90,7 @@ def update_aluno(aluno_id):
             aluno['nota_segundo_semestre'] = novo_aluno.get('nota_segundo_semestre', aluno['nota_segundo_semestre'])
             aluno['turma_id'] = novo_aluno.get('turma_id', aluno['turma_id'])
             aluno['mediaFinal'] = novo_aluno.get('mediaFinal', aluno['mediaFinal'])
+            
             return jsonify(aluno)
     return jsonify({'mensagem': 'Usuário não encontrado'}), 404
 
