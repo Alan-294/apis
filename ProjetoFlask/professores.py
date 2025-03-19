@@ -38,10 +38,10 @@ def professores():
 @app.route('/api/professores/<int:id>', methods=['GET'])
 def professorPorId(id):
     for professor in professores_db:
-        if professor['id'] == id:
-            return jsonify(professor)
-        elif professor['id'] != id:
-            return "Professor não encontrado, verifique se o mesmo foi criado e tente novamente"
+        if professor["id"] == id:
+            return professor
+    
+    return jsonify({'mensagem': 'Professor não encontrado'}), 404
 
 
 @app.route('/api/professores', methods=['POST'])

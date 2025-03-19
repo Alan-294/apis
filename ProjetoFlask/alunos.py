@@ -44,7 +44,6 @@ alunos_db = [
 #}
 #NÃO INSERIR O ID DO ALUNO JUNTO DO JSON
 
-
 def cria_aluno():
 
     aluno = request.get_json()
@@ -89,7 +88,7 @@ def update_aluno(aluno_id):
             aluno['nota_primeiro_semestre'] = novo_aluno.get('nota_primeiro_semestre', aluno['nota_primeiro_semestre'])
             aluno['nota_segundo_semestre'] = novo_aluno.get('nota_segundo_semestre', aluno['nota_segundo_semestre'])
             aluno['turma_id'] = novo_aluno.get('turma_id', aluno['turma_id'])
-            aluno['mediaFinal'] = novo_aluno.get('mediaFinal', aluno['mediaFinal'])
+            aluno['media_final'] = novo_aluno.get('media_final', aluno['media_final'])
             
             return jsonify(aluno)
     return jsonify({'mensagem': 'Usuário não encontrado'}), 404
@@ -102,6 +101,9 @@ def deletar_aluno(aluno_id):
             alunos_db.remove(aluno)
             return jsonify({'mensagem': 'Usuário removido'})
     return jsonify({'mensagem': 'Usuário não encontrado'}), 404
+
+
+
 
 if __name__ == '__main__':
     
