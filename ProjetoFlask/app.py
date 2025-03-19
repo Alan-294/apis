@@ -1,12 +1,11 @@
-from flask import Flask, jsonify
+from flask import Flask,jsonify, request
 
 app = Flask(__name__)
+from professores import *
+from alunos import *
+from Turma import *
 
-@app.route('/api/exemplo', methods=['GET'])
-
-def get_example():
-    dados = {'message': 'Bem-vindo á minha primeira API'}
-    return jsonify(dados)
 
 if __name__ == '__main__':
+    
     app.run(debug=True)

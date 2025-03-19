@@ -1,13 +1,12 @@
 from flask import Flask,jsonify, request
 import random
+from app import app
 
 def criar_id():
     novo_id = random.randint(1000, 9999)
     if not any(aluno["id"] == novo_id for aluno in alunos_db):  
         return novo_id  
    
-app = Flask(__name__)
-
 alunos_db = [
      {
         "id": 1009,
@@ -43,7 +42,6 @@ alunos_db = [
 #"turma_id": 6
 #}
 #NÃO INSERIR O ID DO ALUNO JUNTO DO JSON
-
 
 def cria_aluno():
 
@@ -89,7 +87,7 @@ def update_aluno(aluno_id):
             aluno['nota_primeiro_semestre'] = novo_aluno.get('nota_primeiro_semestre', aluno['nota_primeiro_semestre'])
             aluno['nota_segundo_semestre'] = novo_aluno.get('nota_segundo_semestre', aluno['nota_segundo_semestre'])
             aluno['turma_id'] = novo_aluno.get('turma_id', aluno['turma_id'])
-            aluno['mediaFinal'] = novo_aluno.get('mediaFinal', aluno['mediaFinal'])
+            aluno['media_final'] = novo_aluno.get('media_final', aluno['media_final'])
             
             return jsonify(aluno)
     return jsonify({'mensagem': 'Usuário não encontrado'}), 404
@@ -103,6 +101,5 @@ def deletar_aluno(aluno_id):
             return jsonify({'mensagem': 'Usuário removido'})
     return jsonify({'mensagem': 'Usuário não encontrado'}), 404
 
-if __name__ == '__main__':
-    
-    app.run(debug=True)
+
+

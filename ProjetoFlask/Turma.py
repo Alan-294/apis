@@ -1,7 +1,7 @@
 from flask import Flask,jsonify, request
 import random
+from app import app
 
-app = Flask(__name__)
 
 @app.route('/test')
 def home():
@@ -9,33 +9,31 @@ def home():
 
 turma_db = [
      {
-    "id": 2000,
+    "id": 1,
     "nome": "ADS3",
     "turno": "manha",
-    "professor_id": 12345
+    "professor_id": 1,
+    "ativo": True
   }
 ]
 
 def gerar_id():
-    num = random.randint(0,9999)
-    pecorre = True
-    quantidadeIdIdiferentes = 0
-    while(pecorre):
-        for turma in turma_db:
-            if turma['id'] == num:
-                num = random.randint(1000,9999)
-            else:
-                quantidadeIdIdiferentes += 1
-        if quantidadeIdIdiferentes == len(turma_db):
-            pecorre = False
-    return num   
+    # Obtém todos os IDs existentes em um conjunto para busca rápida
+    ids_existentes = {turma['id'] for turma in turma_db}
     
-@app.route('/turma', methods=['GET', 'POST', 'DELETE','PUT'])
+    # Começa do zero e encontra o primeiro ID disponível
+    num = 0
+    while num in ids_existentes:
+        num += 1
+    
+    return num 
+    
+@app.route('/api/turma', methods=['GET', 'POST', 'DELETE','PUT'])
 def apiTurma():
     metodo = request.method
 
 
-    if metodo == "GET": # http://127.0.0.1:5000/turma 
+    if metodo == "GET": # http://127.0.0.1:5000/api/turma 
         id_turma = request.args.get('id')
         if id_turma:
             for turma in turma_db:
@@ -49,7 +47,7 @@ def apiTurma():
     
 
     
-    elif metodo == "POST": #http://127.0.0.1:5000/turma?nome=ads2&turno=tarde&professor_id=12345
+    elif metodo == "POST": #http://127.0.0.1:5000/api/turma?nome=ads2&turno=tarde&professor_id=12345
 
         nome = request.args.get('nome')  
         turno = request.args.get('turno')  
@@ -61,7 +59,8 @@ def apiTurma():
                 "id": gerar_id(),
                 "nome": nome,
                 "turno": turno,
-                "professor_id": professor_id
+                "professor_id": professor_id,
+                "ativo": True
             }
         )
         return {"message": "Turma adicionada com sucesso",
@@ -71,7 +70,7 @@ def apiTurma():
             } }
     
     
-    elif metodo == "DELETE": #http://127.0.0.1:5000/turma?id=1
+    elif metodo == "DELETE": #http://127.0.0.1:5000/api/turma?id=1
         id_turma = request.args.get('id')
         for turma in turma_db:
             if turma['id'] == int(id_turma):
@@ -80,7 +79,7 @@ def apiTurma():
                         "code": 200}
             
     
-    elif metodo == "PUT": #http://127.0.0.1:5000/turma?id=1&nome=ads2 (alterado)&turno=Noite&professor_id=13
+    elif metodo == "PUT": #http://127.0.0.1:5000/api/turma?id=1&nome=ads2 (alterado)&turno=Noite&professor_id=13
         id_turma = request.args.get('id')
         nome = request.args.get('nome')  
         turno = request.args.get('turno')  
@@ -94,12 +93,10 @@ def apiTurma():
             "id": int(id_turma),
             "nome": nome,
             "turno": turno,
-            "professor_id": professor_id
+            "professor_id": professor_id,
+            "ativo": True
         }
         return {"message" : "Turma atualizada com sucesso",
                 "code": 200,
                }
         
-
-if __name__ == '__main__':
-    app.run(debug=True)
