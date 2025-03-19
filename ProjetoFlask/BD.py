@@ -29,8 +29,6 @@ def organizar_dados(professores_db, turma_db, alunos_db):
 
     return dados_organizados
 
-
-# Dados de exemplo
 alunos_db = [
     {
         "id": 1009,
@@ -38,7 +36,7 @@ alunos_db = [
         "data_nascimento": "2000-01-01",
         "nota_primeiro_semestre": 10.0,
         "nota_segundo_semestre": 8.0,
-        "turma_id": 6,
+        "turma_id": 1,
         "mediaFinal": 9
     },
     {
@@ -47,19 +45,26 @@ alunos_db = [
         "data_nascimento": "1998-09-05",
         "nota_primeiro_semestre": 8.0,
         "nota_segundo_semestre": 6.0,
-        "turma_id": 6,
+        "turma_id": 2,
         "mediaFinal": 7
     }
 ]
 
 turma_db = [
     {
-        "id": 1,
-        "nome": "ADS3",
-        "turno": "manha",
-        "professor_id": 1,
-        "ativo": True
-    }
+    "id": 1,
+    "nome": "ADS3",
+    "turno": "manha",
+    "professor_id": 1,
+    "ativo": True
+  }, 
+    {
+    "id": 2,
+    "nome": "SI6",
+    "turno": "Noturno",
+    "professor_id": 2,
+    "ativo": True
+  }
 ]
 
 professores_db = [
