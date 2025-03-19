@@ -1,7 +1,7 @@
 from flask import Flask,jsonify, request
 import random
+from app import app
 
-app = Flask(__name__)
 
 @app.route('/test')
 def home():
@@ -103,6 +103,3 @@ def apiTurma():
                 "code": 200,
                }
         
-
-if __name__ == '__main__':
-    app.run(debug=True)

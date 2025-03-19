@@ -1,13 +1,12 @@
 from flask import Flask,jsonify, request
 import random
+from app import app
 
 def criar_id():
     novo_id = random.randint(1000, 9999)
     if not any(aluno["id"] == novo_id for aluno in alunos_db):  
         return novo_id  
    
-app = Flask(__name__)
-
 alunos_db = [
      {
         "id": 1009,
@@ -104,7 +103,3 @@ def deletar_aluno(aluno_id):
 
 
 
-
-if __name__ == '__main__':
-    
-    app.run(debug=True)
