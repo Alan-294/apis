@@ -31,12 +31,12 @@ def gerar_id():
             pecorre = False
     return num   
     
-@app.route('/turma', methods=['GET', 'POST', 'DELETE','PUT'])
+@app.route('/api/turma', methods=['GET', 'POST', 'DELETE','PUT'])
 def apiTurma():
     metodo = request.method
 
 
-    if metodo == "GET": # http://127.0.0.1:5000/turma 
+    if metodo == "GET": # http://127.0.0.1:5000/api/turma 
         id_turma = request.args.get('id')
         if id_turma:
             for turma in turma_db:
@@ -50,7 +50,7 @@ def apiTurma():
     
 
     
-    elif metodo == "POST": #http://127.0.0.1:5000/turma?nome=ads2&turno=tarde&professor_id=12345
+    elif metodo == "POST": #http://127.0.0.1:5000/api/turma?nome=ads2&turno=tarde&professor_id=12345
 
         nome = request.args.get('nome')  
         turno = request.args.get('turno')  
@@ -73,7 +73,7 @@ def apiTurma():
             } }
     
     
-    elif metodo == "DELETE": #http://127.0.0.1:5000/turma?id=1
+    elif metodo == "DELETE": #http://127.0.0.1:5000/api/turma?id=1
         id_turma = request.args.get('id')
         for turma in turma_db:
             if turma['id'] == int(id_turma):
@@ -82,7 +82,7 @@ def apiTurma():
                         "code": 200}
             
     
-    elif metodo == "PUT": #http://127.0.0.1:5000/turma?id=1&nome=ads2 (alterado)&turno=Noite&professor_id=13
+    elif metodo == "PUT": #http://127.0.0.1:5000/api/turma?id=1&nome=ads2 (alterado)&turno=Noite&professor_id=13
         id_turma = request.args.get('id')
         nome = request.args.get('nome')  
         turno = request.args.get('turno')  

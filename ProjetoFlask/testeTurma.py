@@ -13,7 +13,7 @@ class TestProduct(unittest.TestCase):
 
     # Teste 001: Verificar se a rota /turma está funcionando
     def teste001(self):
-        r = requests.get('http://127.0.0.1:5000/turma')
+        r = requests.get('http://127.0.0.1:5000/api/turma')
         if r.status_code == 200:
             self.assertTrue(True)
         else:
@@ -23,7 +23,7 @@ class TestProduct(unittest.TestCase):
     # teste 002: verificar se estar retornando um valor json.
 
     def teste002(self):
-        r = requests.get('http://127.0.0.1:5000/turma')
+        r = requests.get('http://127.0.0.1:5000/api/turma')
         if r.headers['Content-Type'] == 'application/json':
             self.assertTrue(True)
         else:
@@ -33,24 +33,24 @@ class TestProduct(unittest.TestCase):
     # teste 003: GeT com id - Validar se estar retornando turma com uma id valida
 
     def teste003(self):
-        r = requests.get('http://127.0.0.1:5000/turma?id=2000') 
+        r = requests.get('http://127.0.0.1:5000/api/turma?id=2000') 
         dados = r.json()
         self.assertEqual(dados['turma']['id'], 2000, "Erro ID não encontrado")
 
         
     # teste 004: GET com id - Validar se estar retornando turma com um id especifico que não existe
     def teste004(self):    
-        r = requests.get('http://127.0.0.1:5000/turma?id=-1')
+        r = requests.get('http://127.0.0.1:5000/api/turma?id=-1')
         dados = r.json()
         if self.assertEqual(dados['code'], 404): 
             self.assertTrue(True)
 
     # teste 005: POST - Validar se está adicionando uma turma
     def teste005(self):
-        r = requests.post('http://127.0.0.1:5000/turma?nome=ads2&turno=noite&professor_id=3000')
+        r = requests.post('http://127.0.0.1:5000/api/turma?nome=ads2&turno=noite&professor_id=3000')
         dados = r.json()     
         id = dados['turma_adicionada']['id']['id']
-        r2 = requests.get(f'http://127.0.0.1:5000/turma?id={id}')
+        r2 = requests.get(f'http://127.0.0.1:5000/api/turma?id={id}')
         dados2 = r2.json()
         self.assertEqual(dados2['turma']['id'], id, "Erro ao adicionar turma")
         return dados2
@@ -59,7 +59,7 @@ class TestProduct(unittest.TestCase):
     def teste006(self):
         dados2 = self.teste005()
         
-        r = requests.put(f'http://127.0.0.1:5000/turma?id={dados2["turma"]["id"]}&nome=Nome(alterado)&turno=Noite&professor_id=13')
+        r = requests.put(f'http://127.0.0.1:5000/api/turma?id={dados2["turma"]["id"]}&nome=Nome(alterado)&turno=Noite&professor_id=13')
 
         dados3 = self.teste001()
         
@@ -76,7 +76,7 @@ class TestProduct(unittest.TestCase):
         
         for turma in listaTurmas['turmas']:
             if turma['id'] == novaTurma['turma']['id']:
-                dodos = requests.delete(f"http://127.0.0.1:5000/turma?id={turma['id']}")
+                dodos = requests.delete(f"http://127.0.0.1:5000/api/turma?id={turma['id']}")
                 break
 
         listaTurmas = self.teste001()
