@@ -68,7 +68,7 @@ class TestProduct(unittest.TestCase):
                                                                  "data_nascimento" :"2003-03-05",
                                                                  "nota_primeiro_semestre":9,
                                                                  "nota_segundo_semestre":10,
-                                                                 "turma_id":6
+                                                                 "turma_id":1
                                                             }      
                           )
 
@@ -100,7 +100,7 @@ class TestProduct(unittest.TestCase):
                             'data-nascimento': '31-10-2003',
                             'nota_primeiro_semestre': 4,
                             'nota_segundo_semestre': 5,
-                            "turma_id": 6,
+                            "turma_id": 1,
                             "media_final": 4.5})
 
         

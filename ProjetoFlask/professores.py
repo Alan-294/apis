@@ -1,34 +1,16 @@
 from flask import Flask,jsonify, request
 from app import app
+from BD import professores_db, turma_db
 
-professores_db = [
-    {
-        "id": 1,
-        "nome": "Maria",
-        "data_nascimento": "2003-02-03",
-        "disciplina": "Math",
-        "salario": 1500,
-        "Observações": "None"
-    },
-    {
-        "id": 2,
-        "nome": "Joao",
-        "data_nascimento": "2005-10-03",
-        "disciplina": "Chemistry",
-        "salario": 2500,
-        "Observações": "None"
-    },
-    {
-        "id": 3,
-        "nome": "Pedro",
-        "data_nascimento": "2005-10-03",
-        "disciplina": "English",
-        "salario": 1550,
-        "Observações": "None"
-    }
-    
-]
 
+def acharTurmas(professor_id):
+    turmas = []
+
+    for turma in turma_db:
+        if (turma["professor_id"] == professor_id):
+            turmas.append(turma)
+            
+    return turmas
 @app.route('/api/professores', methods=['GET'])
 def professores():
     return jsonify(professores_db)
@@ -38,7 +20,14 @@ def professores():
 def professorPorId(id):
     for professor in professores_db:
         if professor["id"] == id:
-            return professor
+            turmas = acharTurmas(professor['id'])
+     
+            return jsonify({
+                "Professor": professor,
+                "turmas ministradas": turmas,
+                "code": 200})
+                    
+            return  jsonify(professor)
     
     return jsonify({'mensagem': 'Professor não encontrado'}), 404
 

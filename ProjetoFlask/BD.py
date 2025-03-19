@@ -1,33 +1,3 @@
-def organizar_dados(professores_db, turma_db, alunos_db):
-    # Cria um dicionário para armazenar os dados organizados
-    dados_organizados = {}
-
-    # Organiza os professores com suas turmas
-    for professor in professores_db:
-        professor['turmas'] = []  # Adiciona uma chave 'turmas' para cada professor
-    
-    # Organiza as turmas e relaciona com o professor
-    for turma in turma_db:
-        # Encontra o professor responsável pela turma
-        professor = next((p for p in professores_db if p['id'] == turma['professor_id']), None)
-        if professor:
-            professor['turmas'].append(turma)  # Adiciona a turma à lista de turmas do professor
-    
-    # Organiza os alunos e relaciona com a turma
-    for aluno in alunos_db:
-        # Encontra a turma do aluno
-        turma = next((t for t in turma_db if t['id'] == aluno['turma_id']), None)
-        if turma:
-            if 'alunos' not in turma:
-                turma['alunos'] = []  # Adiciona uma chave 'alunos' se não existir
-            turma['alunos'].append(aluno)  # Adiciona o aluno à lista de alunos da turma
-    
-    # Organiza tudo em dados_organizados
-    dados_organizados['professores'] = professores_db
-    dados_organizados['turmas'] = turma_db
-    dados_organizados['alunos'] = alunos_db
-
-    return dados_organizados
 
 alunos_db = [
     {
@@ -93,14 +63,6 @@ professores_db = [
         "Observações": "None"
     }
 ]
-
-# Chama a função para organizar os dados
-dados_organizados = organizar_dados(professores_db, turma_db, alunos_db)
-
-# Exibe os dados organizados
-print(dados_organizados)
-
-
 
 
 

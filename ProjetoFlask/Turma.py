@@ -65,7 +65,7 @@ def apiTurma():
     
 
     
-    elif metodo == "POST": #http://127.0.0.1:5000/api/turma?nome=ads2&turno=tarde&professor_id=12345
+    elif metodo == "POST": #http://127.0.0.1:5000/api/turma?nome=ads2&turno=tarde&professor_id=3
 
         nome = request.args.get('nome')  
         turno = request.args.get('turno')  
