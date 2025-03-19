@@ -49,26 +49,41 @@ class TestProduct(unittest.TestCase):
         
     # teste 004: GET com id - Validar se estar retornando professores com um id especifico que não existe
     def teste004(self):    
-        r = requests.get('http://127.0.0.1:5000/professore/4')
-        dados = r.json()
-        if self.assertEqual(dados['code'], 404): 
-            self.assertTrue(True)
+        r = requests.get('http://127.0.0.1:5000/api/professores/4')
+        
+        
+        try:
+            dados = r.json()
+   
+            self.assertTrue('mensagem' in dados, "Resposta não contém mensagem de erro esperada")
+        except requests.exceptions.JSONDecodeError:
+            self.fail("Erro: resposta não é um JSON válido")
 
-    # teste 005: POST - Validar se está adicionando um professor
+    # teste 005: POST - Validar se está adicionando professores
     def teste005(self):
         r = requests.post('http://127.0.0.1:5000/professores/', json={
-            "nome": "Joao",
-            "data_nascimento": "2005-10-03",
-            "disciplina": "Chemistry",
-            "salario": 2500,
-            "Observações": "None"
-        })
-        dados = r.json()     
-        id = dados['professores_adicionada']["id"]["id"]
-        #print(id)
-        r2 = requests.get(f'http://127.0.0.1:5000/professores?id={id}')
+                                                                                "nome": "Joao",
+                                                                                "data_nascimento": "2005-10-03",
+                                                                                "disciplina": "Chemistry",
+                                                                                "salario": 2500,
+                                                                                "Observações": "None"
+                                                                            })
+        if r.status_code != 200:
+            self.fail(f"Erro ao adicionar professor. Status: {r.status_code}, Resposta: {r.text}")
+
+        try:
+            dados = r.json()  
+        except requests.exceptions.JSONDecodeError:
+            self.fail("Erro: resposta não é um JSON válido")
+            
+        id = dados.get("id")
+    
+        if not id:
+            self.fail("Erro: ID do aluno não retornado corretamente")
+
+        r2 = requests.get(f'http://127.0.0.1:5000/api/professores/{id}')
         dados2 = r2.json()
-        self.assertEqual(dados2["professores"]["id"], id, "Erro ao adicionar professor")
+        self.assertEqual(dados2['id'], id, "Erro ao adicionar professor")
         return dados2
     
     # teste 006: PUT - Validar se está editando uma professores
@@ -76,34 +91,41 @@ class TestProduct(unittest.TestCase):
         dados2 = self.teste005()
         #print(dados2)
         
-        r = requests.put(f'http://127.0.0.1:5000/professores?id={dados2["professores"]["id"]}&nome=Nome(alterado)&disciplina=Portuguese&id=3')
+        r = requests.put(f'http://127.0.0.1:5000/professores/{professorPorId}',
+                                json={"nome": "Lucio",
+            "data_nascimento": "1995-10-03",
+            "disciplina": "Cience",
+            "salario": 1500,
+            "Observações": "None"})
 
         dados3 = self.teste001()
-        #print(dados3) 
+        print("dados3:", dados3) 
         
-        for listaprofessoress in dados3["professoress"]:
+        if dados3 is None:
+            self.fail("Erro: teste001() não retornou dados válidos")
+            if isinstance(dados3, list): 
 
-            if listaprofessoress["id"] == dados2["professores"]["id"]:
-                #print(listaprofessoress)
-                self.assertEqual(listaprofessoress['nome'], 'Nome(alterado)', "Erro ao editar professor")
+                for listaprofessor in dados3:
+                    if listaprofessor['id'] == dados2['id']: 
+                     self.assertEqual(listaprofessor['nome'], 'Lucio', "Erro ao editar do professor")
+                    break
+                else:
+                    self.fail("Erro: Professor não encontrado na lista após edição")
+        else:
+            self.fail("Erro: dados3 não contém uma lista de professores")
 
 
     # teste 007: DELETE - Validar se está excluindo uma professores
     def teste007(self):
-        novaprofessores = self.teste005()
-        listaprofessoress = self.teste001()
-        
-        for professores in listaprofessoress["professoress"]:
-            if professores["id"] == novaprofessores["professores"]["id"]:
-                dodos = requests.delete(f"http://127.0.0.1:5000/professores?id={professores['id']}")
-                break
+    
+                            
+        novo_professor = self.teste005()
+        professorPorId = novo_professor["id"]
 
-        listaprofessoress = self.teste001()
+        requests.delete(f"http://127.0.0.1:5000/api/professores/{professorPorId}")
 
-        if novaprofessores["professores"]["id"] not in [t["id"] for t in listaprofessoress["professoress"]]: 
-            self.assertTrue(True)
-        else:
-            self.fail("Erro ao excluir professor")
+        r2 = requests.get(f"http://127.0.0.1:5000/api/professores/{professorPorId}")
+        self.assertEqual(r2.status_code, 404, "Erro: Professor ainda existe após deleção")
 
 
 if __name__ == '__main__':
