@@ -9,27 +9,24 @@ def home():
 
 turma_db = [
      {
-    "id": 2000,
+    "id": 1,
     "nome": "ADS3",
     "turno": "manha",
-    "professor_id": 12345,
+    "professor_id": 1,
     "ativo": True
   }
 ]
 
 def gerar_id():
-    num = random.randint(0,9999)
-    pecorre = True
-    quantidadeIdIdiferentes = 0
-    while(pecorre):
-        for turma in turma_db:
-            if turma['id'] == num:
-                num = random.randint(1000,9999)
-            else:
-                quantidadeIdIdiferentes += 1
-        if quantidadeIdIdiferentes == len(turma_db):
-            pecorre = False
-    return num   
+    # Obtém todos os IDs existentes em um conjunto para busca rápida
+    ids_existentes = {turma['id'] for turma in turma_db}
+    
+    # Começa do zero e encontra o primeiro ID disponível
+    num = 0
+    while num in ids_existentes:
+        num += 1
+    
+    return num 
     
 @app.route('/api/turma', methods=['GET', 'POST', 'DELETE','PUT'])
 def apiTurma():
