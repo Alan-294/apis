@@ -17,11 +17,13 @@ class TestProfessoresAPI(unittest.TestCase):
 
     def test_003_get_professor_por_id_valido(self):
         """Verifica se um professor com ID válido é retornado corretamente."""
+        
         r = requests.get(f"{self.BASE_URL}/1")
         self.assertEqual(r.status_code, 200, "Erro: ID não encontrado")
 
         dados = r.json()
-        self.assertEqual(dados["id"], 1, "ID incorreto")
+        
+        self.assertEqual(dados["Professor"]["id"], 1, "ID incorreto")
 
     def test_004_get_professor_por_id_invalido(self):
         """Verifica se a API retorna erro ao buscar um ID inexistente."""
@@ -67,7 +69,7 @@ class TestProfessoresAPI(unittest.TestCase):
         self.assertEqual(r2.status_code, 200, "Erro ao buscar professor após edição")
 
         dados_atualizados = r2.json()
-        self.assertEqual(dados_atualizados["nome"], "Carlos Editado", "Erro ao atualizar nome do professor")
+        self.assertEqual(dados_atualizados["Professor"]["nome"], "Carlos Editado", "Erro ao atualizar nome do professor")
 
     def test_007_delete_professor(self):
         """Verifica se a API exclui um professor corretamente."""

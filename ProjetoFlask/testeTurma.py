@@ -47,7 +47,7 @@ class TestProduct(unittest.TestCase):
 
     # teste 005: POST - Validar se está adicionando uma turma
     def teste005(self):
-        r = requests.post('http://127.0.0.1:5000/api/turma?nome=ads2&turno=noite&professor_id=3000')
+        r = requests.post('http://127.0.0.1:5000/api/turma?nome=ads2&turno=noite&professor_id=2')
         dados = r.json()     
         id = dados['turma_adicionada']['id']['id']
         r2 = requests.get(f'http://127.0.0.1:5000/api/turma?id={id}')
@@ -59,7 +59,7 @@ class TestProduct(unittest.TestCase):
     def teste006(self):
         dados2 = self.teste005()
         
-        r = requests.put(f'http://127.0.0.1:5000/api/turma?id={dados2["turma"]["id"]}&nome=Nome(alterado)&turno=Noite&professor_id=13')
+        r = requests.put(f'http://127.0.0.1:5000/api/turma?id={dados2["turma"]["id"]}&nome=Nome(alterado)&turno=Noite&professor_id=1')
 
         dados3 = self.teste001()
         
