@@ -1,35 +1,12 @@
 from flask import Flask,jsonify, request
 import random
-import model_aluno as model
+import models.model_aluno as model
 from app import app
 
 def criar_id():
     novo_id = random.randint(1000, 9999)
     if not any(aluno["id"] == novo_id for aluno in alunos_db):  
         return novo_id  
-   
-alunos_db = [
-     {
-        "id": 1009,
-        "nome": "João Pedro",
-        "data_nascimento": "2000-01-01",
-        "nota_primeiro_semestre": 10.0,
-        "nota_segundo_semestre": 8.0,
-        "turma_id": 6,
-        "mediaFinal": 9
-    },
-     {
-        "id": 3029,
-        "nome": "André Augusto",
-        "data_nascimento": "1998-09-05",
-        "nota_primeiro_semestre": 8.0,
-        "nota_segundo_semestre": 6.0,
-        "turma_id": 6,
-        "mediaFinal": 7
-    },
-]
-
-
 
 @app.route('/api/alunos', methods=['POST'])
 #Caminho do método POST 
@@ -56,7 +33,7 @@ def cria_aluno():
 
 @app.route('/api/alunos', methods=['GET'])
 def consulta_alunos():
-    return jsonify(alunos_db)
+    return model.lista_alunos()
 
 
 

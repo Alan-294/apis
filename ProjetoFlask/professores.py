@@ -1,6 +1,6 @@
 from flask import Flask,jsonify, request
 from app import app
-import model_professores as model
+import models.model_professores as model
 
 professores_db = [
     {

@@ -22,8 +22,9 @@ dados = {"alunos":[
 
 def criar_id():
     novo_id = random.randint(1000, 9999)
-    if not any(aluno["id"] == novo_id for aluno in dados):  
+    if not any(aluno["id"] == novo_id for aluno in dados["alunos"]):  
         return novo_id  
+    
 def adiciona_aluno(aluno):
     mediaFinal = (aluno['nota_primeiro_semestre'] + aluno['nota_segundo_semestre']) / 2
 
@@ -40,14 +41,16 @@ class AlunoNaoEncontrado(Exception):
     pass 
 
 def aluno_por_id(aluno_id):
-     lista = dados["alunos"]
-     for aluno in lista:
+    lista = dados["alunos"]
+    for aluno in lista:
         if aluno["id"] == aluno_id:
-            return aluno
+            return jsonify(aluno)
+
+    return jsonify({'mensagem': 'Usuário não encontrado'}), 404
         
 
 def update_aluno(id_aluno):
-     novo_aluno = request.json
+     
      for aluno in dados['alunos']:
         if aluno['id'] == id_aluno:
             novo_aluno = request.json
@@ -65,14 +68,14 @@ def update_aluno(id_aluno):
      return jsonify({'mensagem': 'Usuário não encontrado'}), 404
 
 def deletar_aluno(aluno_id):
-    for aluno in dados:
+    for aluno in dados['alunos']:
         if aluno['id'] == aluno_id:
-            dados.remove(aluno)
+            dados['alunos'].remove(aluno)
             return jsonify({'mensagem': 'Usuário removido'})
     return jsonify({'mensagem': 'Usuário não encontrado'}), 404
 
 def consulta_aluno(aluno_id):
-    for aluno in dados:
+    for aluno in dados['alunos']:
         if aluno["id"] == aluno_id:
             return aluno
     

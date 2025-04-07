@@ -1,7 +1,7 @@
 from flask import Flask,jsonify, request
 import random
 from app import app
-import model_turmas as model
+import models.model_turmas as model
 
 
 @app.route('/test')
