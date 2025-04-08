@@ -4,7 +4,7 @@ from app import app
 from BD import dados
 
 def gerar_id():
-    ids_existentes = {turma['id'] for turma in dados_turma}
+    ids_existentes = {turma['id'] for turma in dados['turmas']}
     
     num = 0
     while num in ids_existentes:
@@ -15,17 +15,16 @@ def gerar_id():
 def apiTurma():
     metodo = request.method
 
-
     if metodo == "GET": # http://127.0.0.1:5000/api/turma 
         id_turma = request.args.get('id')
         if id_turma:
-            for turma in dados_turma:
+            for turma in dados['turmas']:
                 if turma['id'] == int(id_turma):
                     return {"turma": turma,
                             "code": 200}
             return {"message": "Turma não encontrada",
                  'code': 404}
-        return {"turmas": dados_turma,
+        return {"turmas": dados['turmas'],
             "code": 200}
     
 
@@ -37,7 +36,7 @@ def apiTurma():
         professor_id = request.args.get('professor_id')
 
 
-        dados_turma.append(
+        dados['turmas'].append(
             {
                 "id": gerar_id(),
                 "nome": nome,
@@ -49,15 +48,15 @@ def apiTurma():
         return {"message": "Turma adicionada com sucesso",
                 'code': 200,
                 'turma_adicionada':  {
-                "id": dados_turma[len(dados_turma)-1],           
+                "id": dados['turmas'][len(dados['turmas'])-1],           
             } }
     
     
     elif metodo == "DELETE": #http://127.0.0.1:5000/api/turma?id=1
         id_turma = request.args.get('id')
-        for turma in dados_turma:
+        for turma in dados['turmas']:
             if turma['id'] == int(id_turma):
-                dados_turma.remove(turma)
+                dados['turmas'].remove(turma)
                 return {"message": "Turma excluída com sucesso",
                         "code": 200}
             
@@ -68,11 +67,11 @@ def apiTurma():
         turno = request.args.get('turno')  
         professor_id = request.args.get('professor_id')
         posicao = -1
-        for turma in dados_turma:
+        for turma in dados['turmas']:
             posicao += 1
             if turma['id'] == int(id_turma):
                 break               
-        dados_turma[posicao] = {
+        dados['turmas'][posicao] = {
             "id": int(id_turma),
             "nome": nome,
             "turno": turno,

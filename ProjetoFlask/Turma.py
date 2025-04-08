@@ -4,9 +4,6 @@ from app import app
 import models.model_turmas as model
 
 
-@app.route('/test')
-def home():
-    return "Hello, World!"
 
 turma_db = [
      {
@@ -24,5 +21,4 @@ def gerar_id():
     
 @app.route('/api/turma', methods=['GET', 'POST', 'DELETE','PUT'])
 def apiTurma():
-
         return model.apiTurma()
