@@ -1,16 +1,7 @@
 from flask import Flask,jsonify, request
 import random
 from app import app
-
-dados_turma = [
-     {
-    "id": 1,
-    "nome": "ADS3",
-    "turno": "manha",
-    "professor_id": 1,
-    "ativo": True
-  }
-]
+from BD import dados
 
 def gerar_id():
     ids_existentes = {turma['id'] for turma in dados_turma}

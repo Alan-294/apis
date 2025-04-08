@@ -23,7 +23,7 @@ class TestProfessoresAPI(unittest.TestCase):
 
         dados = r.json()
         
-        self.assertEqual(dados["Professor"]["id"], 1, "ID incorreto")
+        self.assertEqual(dados["id"], 1, "ID incorreto")
 
     def test_004_get_professor_por_id_invalido(self):
         """Verifica se a API retorna erro ao buscar um ID inexistente."""
@@ -69,7 +69,7 @@ class TestProfessoresAPI(unittest.TestCase):
         self.assertEqual(r2.status_code, 200, "Erro ao buscar professor após edição")
 
         dados_atualizados = r2.json()
-        self.assertEqual(dados_atualizados["Professor"]["nome"], "Carlos Editado", "Erro ao atualizar nome do professor")
+        self.assertEqual(dados_atualizados["nome"], "Carlos Editado", "Erro ao atualizar nome do professor")
 
     def test_007_delete_professor(self):
         """Verifica se a API exclui um professor corretamente."""
