@@ -1,16 +1,13 @@
-from flask import Flask,jsonify, request
-from controllers.alunos_routes import alunos_blueprint
-from controllers.professores_routes import professores_blueprint
-
-app.register_blueprint(alunos_blueprint)
-app.register_blueprint(professores_blueprint)
+from flask import Flask
+from controllers.alunos_controller import alunos_bp
+from controllers.professores_controller import professores_bp
+from controllers.turmas_controller import turmas_bp
 
 app = Flask(__name__)
-from professores import *
-from alunos import *
-from Turma import *
 
+app.register_blueprint(alunos_bp)
+app.register_blueprint(professores_bp)
+app.register_blueprint(turmas_bp)
 
 if __name__ == '__main__':
-    
     app.run(debug=True)

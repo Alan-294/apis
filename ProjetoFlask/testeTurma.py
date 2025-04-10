@@ -1,7 +1,6 @@
 import unittest
 from flask import request  # Import do Flask (caso esteja usando)
 import requests  # Biblioteca para requisições HTTP
-from Turma import *
 
 class TestProduct(unittest.TestCase):
     def test001(self):
@@ -59,7 +58,7 @@ class TestProduct(unittest.TestCase):
     def teste006(self):
         dados2 = self.teste005()
         
-        r = requests.put(f'http://127.0.0.1:5000/api/turma?id={dados2["turma"]["id"]}&nome=Nome(alterado)&turno=Noite&professor_id=1')
+        r = requests.put(f"http://127.0.0.1:5000/api/turma?" + "id={dados2['turma']['id']}&nome=Nome(alterado)&turno=Noite&professor_id=1")
 
         dados3 = self.teste001()
         
@@ -76,7 +75,7 @@ class TestProduct(unittest.TestCase):
         
         for turma in listaTurmas['turmas']:
             if turma['id'] == novaTurma['turma']['id']:
-                dodos = requests.delete(f"http://127.0.0.1:5000/api/turma?id={turma['id']}")
+                dodos = requests.delete(f"http://127.0.0.1:5000/api/turma?id=" + "{turma['id']}")
                 break
 
         listaTurmas = self.teste001()

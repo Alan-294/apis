@@ -1,6 +1,5 @@
 from flask import Flask,jsonify, request
 import random
-from app import app
 import models.model_turmas as model
 
 
