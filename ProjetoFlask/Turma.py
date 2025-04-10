@@ -1,123 +1,24 @@
 from flask import Flask,jsonify, request
 import random
 from app import app
-from BD import turma_db, alunos_db, professores_db
+import models.model_turmas as model
 
-@app.route('/test')
-def home():
-    return "Hello, World!"
 
-def professor_existe(professor_id):
-    #Verifica se o ID do professor existe na base de dados.
-    for professor in professores_db:
-        if (professor["id"] == professor_id):
-            return True
-    return False
 
-def acharAlunos(turma_id):
-    alunos = []
+turma_db = [
+     {
+    "id": 1,
+    "nome": "ADS3",
+    "turno": "manha",
+    "professor_id": 1,
+    "ativo": True
+  }
+]
 
-    for aluno in alunos_db:
-        if (aluno["turma_id"] == turma_id):
-            alunos.append(aluno)
-            
-    return alunos
 def gerar_id():
-    # Obtém todos os IDs existentes em um conjunto para busca rápida
-    ids_existentes = {turma['id'] for turma in turma_db}
-    
-    # Começa do zero e encontra o primeiro ID disponível
-    num = 0
-    while num in ids_existentes:
-        num += 1
-    
-    return num 
+
+    return model.gerar_id()
     
 @app.route('/api/turma', methods=['GET', 'POST', 'DELETE','PUT'])
 def apiTurma():
-    metodo = request.method
-
-    if metodo == "GET": # http://127.0.0.1:5000/api/turma 
-        id_turma = request.args.get('id')
-        if id_turma:
-            for turma in turma_db:
-                if turma['id'] == int(id_turma):
-                    alunos = acharAlunos(turma['id'])
-                    turma_sem_alunos = {key: value for key, value in turma.items() if key != "alunos"}
-                    return jsonify({
-                            "turma": turma_sem_alunos,
-                            "alunos": alunos,
-                            "code": 200})
-                    
-            return jsonify({"mensagem": "Turma não encontrada",
-                 'code': 404})
-            
-            
-        turmas_sem_alunos = [
-            {key: value for key, value in turma.items() if key != "alunos"}
-            for turma in turma_db
-        ]
-
-        return jsonify({
-            "turmas": turmas_sem_alunos,
-            "code": 200
-        })
-    
-
-    
-    elif metodo == "POST": #http://127.0.0.1:5000/api/turma?nome=ads2&turno=tarde&professor_id=3
-
-        nome = request.args.get('nome')  
-        turno = request.args.get('turno')  
-        professor_id = request.args.get('professor_id')
-        professor_id = int(professor_id)
-        if professor_existe(professor_id):
-            turma_db.append(
-                {
-                    "id": gerar_id(),
-                    "nome": nome,
-                    "turno": turno,
-                    "professor_id": professor_id,
-                    "ativo": True
-                }
-            )
-            return {"message": "Turma adicionada com sucesso",
-                    'code': 200,
-                    'turma_adicionada':  {
-                    "id": turma_db[len(turma_db)-1],           
-                } }
-            
-        return jsonify({"Erro": f"O professor de id {professor_id} não existe"})
-
-    
-    
-    elif metodo == "DELETE": #http://127.0.0.1:5000/api/turma?id=1
-        id_turma = request.args.get('id')
-        for turma in turma_db:
-            if turma['id'] == int(id_turma):
-                turma_db.remove(turma)
-                return {"message": "Turma excluída com sucesso",
-                        "code": 200}
-            
-    
-    elif metodo == "PUT": #http://127.0.0.1:5000/api/turma?id=1&nome=ads2 (alterado)&turno=Noite&professor_id=13
-        id_turma = request.args.get('id')
-        nome = request.args.get('nome')  
-        turno = request.args.get('turno')  
-        professor_id = request.args.get('professor_id')
-        posicao = -1
-        for turma in turma_db:
-            posicao += 1
-            if turma['id'] == int(id_turma):
-                break               
-        turma_db[posicao] = {
-            "id": int(id_turma),
-            "nome": nome,
-            "turno": turno,
-            "professor_id": professor_id,
-            "ativo": True
-        }
-        return {"message" : "Turma atualizada com sucesso",
-                "code": 200,
-               }
-        
+        return model.apiTurma()

@@ -97,7 +97,7 @@ class TestProduct(unittest.TestCase):
         
         r = requests.put(f'http://127.0.0.1:5000/api/alunos/{aluno_id}',
                         json={'nome': 'Gohan',
-                            'data-nascimento': '31-10-2003',
+                            'data_nascimento': '31-10-2003',
                             'nota_primeiro_semestre': 4,
                             'nota_segundo_semestre': 5,
                             "turma_id": 1,
