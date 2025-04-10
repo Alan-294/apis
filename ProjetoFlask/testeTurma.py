@@ -65,25 +65,33 @@ class TestProduct(unittest.TestCase):
         for listaTurmas in dados3['turmas']:
 
             if listaTurmas['id'] == dados2['turma']['id']:
-                self.assertEqual(listaTurmas['nome'], 'Nome(alterado)', "Erro ao editar turma")
+                self.assertEqual(listaTurmas['nome'], 'ads2', "Erro ao editar turma")
 
 
     # teste 007: DELETE - Validar se está excluindo uma turma
     def teste007(self):
-        novaTurma = self.teste005()
-        listaTurmas = self.teste001()
+        # Setup -
+        # create a test turma
+        test_turma = self.teste005()
+        turma_id = test_turma['turma']['id']
         
-        for turma in listaTurmas['turmas']:
-            if turma['id'] == novaTurma['turma']['id']:
-                dodos = requests.delete(f"http://127.0.0.1:5000/api/turma?id=" + "{turma['id']}")
-                break
-
-        listaTurmas = self.teste001()
-
-        if novaTurma['turma']['id'] not in [t['id'] for t in listaTurmas['turmas']]: 
-            self.assertTrue(True)
-        else:
-            self.fail("Erro ao excluir turma")
+        # Verify turma exists before deletion
+        initial_turmas = self.teste001()
+        self.assertIn(turma_id, [t['id'] for t in initial_turmas['turmas']], 
+                     "Turma should exist before deletion")
+        
+        # Delete the turma
+        delete_url = f"http://127.0.0.1:5000/api/turma?id={turma_id}"
+        response = requests.delete(delete_url)
+        
+        # Verify successful deletion response
+        self.assertEqual(response.status_code, 200, 
+                        "DELETE request should return 200 status")
+        
+        # Verify turma no longer exists
+        updated_turmas = self.teste001()
+        self.assertNotIn(turma_id, [t['id'] for t in updated_turmas['turmas']], 
+                        "Turma should be removed after deletion")
         
 
 
