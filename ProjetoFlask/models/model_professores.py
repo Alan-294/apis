@@ -1,5 +1,5 @@
 from flask import Flask,jsonify, request
-from BD import dados 
+from .BD import dados 
 
 
 def professores():
