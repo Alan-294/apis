@@ -4,7 +4,6 @@ import requests  # Biblioteca para requisições HTTP
 class TestProfessoresAPI(unittest.TestCase):
 
     BASE_URL = "http://127.0.0.1:5000/api/professores"
-
     def test_001_verificar_rota_professores(self):
         """Verifica se a rota /professores está funcionando."""
         r = requests.get(self.BASE_URL)

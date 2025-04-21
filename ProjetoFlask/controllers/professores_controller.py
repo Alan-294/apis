@@ -1,5 +1,5 @@
 from flask import Blueprint, request
-from models import model_professores  # Certifique-se de que o modelo está correto
+from models import model_professores 
 
 professores_bp = Blueprint('professores', __name__)
 

@@ -1,7 +1,6 @@
 from flask import Flask,jsonify, request
 import random
-from app import app
-from BD import dados
+from .BD import dados
 
 def gerar_id():
     ids_existentes = {turma['id'] for turma in dados['turmas']}
@@ -61,7 +60,7 @@ def apiTurma():
                         "code": 200}
             
     
-    elif metodo == "PUT": #http://127.0.0.1:5000/api/turma?id=1&nome=ads2 (alterado)&turno=Noite&professor_id=13
+    elif metodo == "PUT": #http://127.0.0.1:5000/api/turma?id=1&nome=ads2&turno=Noite&professor_id=13
         id_turma = request.args.get('id')
         nome = request.args.get('nome')  
         turno = request.args.get('turno')  

@@ -1,6 +1,6 @@
 import random
 from flask import jsonify, request
-from BD import dados
+from .BD import dados
 
 
 def criar_id():

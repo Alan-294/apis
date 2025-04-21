@@ -1,7 +1,6 @@
 import unittest
 from flask import request  # Import do Flask (caso esteja usando)
 import requests  # Biblioteca para requisições HTTP
-from alunos import *
 
 class TestProduct(unittest.TestCase):
     def test001(self):
