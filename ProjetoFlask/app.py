@@ -10,4 +10,4 @@ app.register_blueprint(professores_bp)
 app.register_blueprint(turmas_bp)
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')
