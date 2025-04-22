@@ -7,33 +7,57 @@ def conectar_banco():
     conexao.row_factory = sqlite3.Row  # Permite acessar os resultados como dicionários
     return conexao
 
-# Adicionar um novo aluno
-def adiciona_aluno():
-    aluno = request.json
-
+def adiciona_aluno(aluno):
+    # Validação de entrada
     if not aluno:
         return jsonify({"erro": "JSON inválido ou ausente"}), 400
 
-    conexao = conectar_banco()
-    cursor = conexao.cursor()
+    campos_obrigatorios = [
+        "nome", 
+        "idade", 
+        "turma_id", 
+        "nota_primeiro_semestre", 
+        "nota_segundo_semestre"
+    ]
 
-    # Calcula a média final
-    media_final = (aluno['nota_primeiro_semestre'] + aluno['nota_segundo_semestre']) / 2
+    for campo in campos_obrigatorios:
+        if campo not in aluno:
+            return jsonify({"erro": f"Campo obrigatório ausente: {campo}"}), 400
 
-    # Insere o aluno no banco de dados
-    cursor.execute('''
-        INSERT INTO alunos (nome, idade, turma_id)
-        VALUES (?, ?, ?)
-    ''', (aluno['nome'], aluno['idade'], aluno['turma_id']))
+    try:
+        # Conversões seguras
+        nota1 = float(aluno["nota_primeiro_semestre"])
+        nota2 = float(aluno["nota_segundo_semestre"])
+        media_final = (nota1 + nota2) / 2
 
-    conexao.commit()
-    aluno_id = cursor.lastrowid  # Obtém o ID do aluno recém-inserido
-    conexao.close()
+        conexao = conectar_banco()
+        cursor = conexao.cursor()
 
-    # Retorna o aluno com o ID e a média final
-    aluno['id'] = aluno_id
-    aluno['media_final'] = media_final
-    return jsonify(aluno), 201
+        cursor.execute('''
+            INSERT INTO alunos (
+                nome, idade, turma_id, 
+                nota_primeiro_semestre, nota_segundo_semestre, media_final
+            ) VALUES (?, ?, ?, ?, ?, ?)
+        ''', (
+            aluno["nome"],
+            aluno["idade"],
+            aluno["turma_id"],
+            nota1,
+            nota2,
+            media_final
+        ))
+
+        conexao.commit()
+        aluno_id = cursor.lastrowid
+        conexao.close()
+
+        aluno["id"] = aluno_id
+        aluno["media_final"] = media_final
+
+        return jsonify(aluno), 201
+
+    except Exception as e:
+        return jsonify({"erro": f"Erro ao adicionar aluno: {str(e)}"}), 500
 
 # Listar todos os alunos
 def lista_alunos():
