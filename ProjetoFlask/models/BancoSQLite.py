@@ -73,3 +73,5 @@ def inicializar_banco():
     conexao.commit()
     conexao.close()
     print("Banco de dados inicializado com sucesso!")
+
+    inicializar_banco()
