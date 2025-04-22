@@ -1,81 +1,102 @@
-import random
-from flask import jsonify, request
-from .BD import dados
-<<<<<<< HEAD
 import sqlite3
+from flask import jsonify, request
 
+# Função para conectar ao banco de dados
 def conectar_banco():
-    return sqlite3.connect("banco_de_dados.db")
-=======
+    conexao = sqlite3.connect("banco_de_dados.db")
+    conexao.row_factory = sqlite3.Row  # Permite acessar os resultados como dicionários
+    return conexao
 
->>>>>>> 3a9ed188ab87db7ac3bb07925be1767065734163
+# Adicionar um novo aluno
+def adiciona_aluno():
+    aluno = request.json
 
-def criar_id():
-    novo_id = random.randint(1000, 9999)
-    if not any(aluno["id"] == novo_id for aluno in dados["alunos"]):  
-        return novo_id  
-    
-def adiciona_aluno(aluno):
-<<<<<<< HEAD
-    conectar_banco()
-=======
->>>>>>> 3a9ed188ab87db7ac3bb07925be1767065734163
-    mediaFinal = (aluno['nota_primeiro_semestre'] + aluno['nota_segundo_semestre']) / 2
+    if not aluno:
+        return jsonify({"erro": "JSON inválido ou ausente"}), 400
 
-    aluno['media_final'] = mediaFinal
-    aluno['id'] = criar_id()
-    dados['alunos'].append(aluno)
-<<<<<<< HEAD
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
 
+    # Calcula a média final
+    media_final = (aluno['nota_primeiro_semestre'] + aluno['nota_segundo_semestre']) / 2
 
-=======
->>>>>>> 3a9ed188ab87db7ac3bb07925be1767065734163
-    return jsonify(aluno)
+    # Insere o aluno no banco de dados
+    cursor.execute('''
+        INSERT INTO alunos (nome, idade, turma_id)
+        VALUES (?, ?, ?)
+    ''', (aluno['nome'], aluno['idade'], aluno['turma_id']))
 
+    conexao.commit()
+    aluno_id = cursor.lastrowid  # Obtém o ID do aluno recém-inserido
+    conexao.close()
+
+    # Retorna o aluno com o ID e a média final
+    aluno['id'] = aluno_id
+    aluno['media_final'] = media_final
+    return jsonify(aluno), 201
+
+# Listar todos os alunos
 def lista_alunos():
-    return jsonify(dados['alunos'])
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
 
+    # Consulta todos os alunos
+    cursor.execute('SELECT * FROM alunos')
+    alunos = [dict(row) for row in cursor.fetchall()]  # Converte os resultados em uma lista de dicionários
+    conexao.close()
 
-class AlunoNaoEncontrado(Exception):
-    pass 
+    return jsonify(alunos)
 
-def aluno_por_id(aluno_id):
-    lista = dados["alunos"]
-    for aluno in lista:
-        if aluno["id"] == aluno_id:
-            return jsonify(aluno)
-
-    return jsonify({'mensagem': 'Usuário não encontrado'}), 404
-        
-
-def update_aluno(id_aluno):
-     
-     for aluno in dados['alunos']:
-        if aluno['id'] == id_aluno:
-            novo_aluno = request.json
-        
-        
-            aluno['nome'] = novo_aluno.get('nome', aluno['nome'])
-            aluno['data_nascimento'] = novo_aluno.get('data_nascimento', aluno['data_nascimento'])
-            aluno['nota_primeiro_semestre'] = novo_aluno.get('nota_primeiro_semestre', aluno['nota_primeiro_semestre'])
-            aluno['nota_segundo_semestre'] = novo_aluno.get('nota_segundo_semestre', aluno['nota_segundo_semestre'])
-            aluno['turma_id'] = novo_aluno.get('turma_id', aluno['turma_id'])
-            aluno['media_final'] = novo_aluno.get('media_final', aluno['media_final'])
-            
-            return jsonify(aluno)
-    
-     return jsonify({'mensagem': 'Usuário não encontrado'}), 404
-
-def deletar_aluno(aluno_id):
-    for aluno in dados['alunos']:
-        if aluno['id'] == aluno_id:
-            dados['alunos'].remove(aluno)
-            return jsonify({'mensagem': 'Usuário removido'})
-    return jsonify({'mensagem': 'Usuário não encontrado'}), 404
-
+# Consultar um aluno por ID
 def consulta_aluno(aluno_id):
-    for aluno in dados['alunos']:
-        if aluno["id"] == aluno_id:
-            return aluno
-    
-    return jsonify({'mensagem': 'Usuário não encontrado'}), 404
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+
+    cursor.execute('SELECT * FROM alunos WHERE id = ?', (aluno_id,))
+    aluno = cursor.fetchone()
+    conexao.close()
+
+    if aluno:
+        return jsonify(dict(aluno)), 200
+    else:
+        return jsonify({'mensagem': 'Usuário não encontrado'}), 404
+
+# Atualizar um aluno
+def update_aluno(id_aluno):
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+
+    novo_aluno = request.json
+
+    cursor.execute('''
+        UPDATE alunos
+        SET nome = ?, idade = ?, turma_id = ?
+        WHERE id = ?
+    ''', (
+        novo_aluno.get('nome'),
+        novo_aluno.get('idade'),
+        novo_aluno.get('turma_id'),
+        id_aluno
+    ))
+
+    conexao.commit()
+    conexao.close()
+
+    if cursor.rowcount > 0:
+        return jsonify({'mensagem': 'Aluno atualizado com sucesso'})
+    else:
+        return jsonify({'mensagem': 'Usuário não encontrado'}), 404
+
+# Deletar um aluno
+def deletar_aluno(aluno_id):
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+
+    cursor.execute('DELETE FROM alunos WHERE id = ?', (aluno_id,))
+    conexao.commit()
+    conexao.close()
+
+    if cursor.rowcount > 0:
+        return jsonify({'mensagem': 'Usuário removido com sucesso'})
+    else:
+        return jsonify({'mensagem': 'Usuário não encontrado'}), 404

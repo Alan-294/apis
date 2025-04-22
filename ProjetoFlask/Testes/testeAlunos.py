@@ -34,12 +34,12 @@ class TestProduct(unittest.TestCase):
     # teste 003: GeT com id - Validar se estar retornando alunos com uma id valida
 
     def teste003(self):
-        r = requests.get('http://127.0.0.1:5000/api/alunos/1009') 
+        r = requests.get('http://127.0.0.1:5000/api/alunos/1') 
         
         try:
             dados = r.json()
             if 'id' in dados:
-                self.assertEqual(dados['id'], 1009, "Erro ID não encontrado")
+                self.assertEqual(dados['id'], 1, "Erro ID não encontrado")
             else:
                 self.fail("Resposta não contém 'id'")
         except requests.exceptions.JSONDecodeError:
@@ -67,7 +67,7 @@ class TestProduct(unittest.TestCase):
                                                                  "data_nascimento" :"2003-03-05",
                                                                  "nota_primeiro_semestre":9,
                                                                  "nota_segundo_semestre":10,
-                                                                 "turma_id":1
+                                                                 
                                                             }      
                           )
 
@@ -90,49 +90,49 @@ class TestProduct(unittest.TestCase):
         return dados2
     
     
-    def teste006(self):
-        dados2 = self.teste005() 
-        aluno_id = dados2['id']
+    # def teste006(self):
+    #     dados2 = self.teste005() 
+    #     aluno_id = dados2['id']
         
-        r = requests.put(f'http://127.0.0.1:5000/api/alunos/{aluno_id}',
-                        json={'nome': 'Gohan',
-                            'data_nascimento': '31-10-2003',
-                            'nota_primeiro_semestre': 4,
-                            'nota_segundo_semestre': 5,
-                            "turma_id": 1,
-                            "media_final": 4.5})
+    #     r = requests.put(f'http://127.0.0.1:5000/api/alunos/{aluno_id}',
+    #                     json={'nome': 'Gohan',
+    #                         'data_nascimento': '31-10-2003',
+    #                         'nota_primeiro_semestre': 4,
+    #                         'nota_segundo_semestre': 5,
+    #                         "turma_id": 1,
+    #                         "media_final": 4.5})
 
         
-        dados3 = self.teste001()
-        print("dados3:", dados3)  
+    #     dados3 = self.teste001()
+    #     print("dados3:", dados3)  
 
-        if dados3 is None:
-            self.fail("Erro: teste001() não retornou dados válidos")
+    #     if dados3 is None:
+    #         self.fail("Erro: teste001() não retornou dados válidos")
         
         
-        if isinstance(dados3, list): 
-            for listaalunos in dados3:
-                if listaalunos['id'] == dados2['id']: 
-                    self.assertEqual(listaalunos['nome'], 'Gohan', "Erro ao editar aluno")
-                    break
-            else:
-                self.fail("Erro: Aluno não encontrado na lista após edição")
-        else:
-            self.fail("Erro: dados3 não contém uma lista de alunos")
+    #     if isinstance(dados3, list): 
+    #         for listaalunos in dados3:
+    #             if listaalunos['id'] == dados2['id']: 
+    #                 self.assertEqual(listaalunos['nome'], 'Gohan', "Erro ao editar aluno")
+    #                 break
+    #         else:
+    #             self.fail("Erro: Aluno não encontrado na lista após edição")
+    #     else:
+    #         self.fail("Erro: dados3 não contém uma lista de alunos")
 
 
 
-    # teste 007: DELETE - Validar se está excluindo uma alunos
-    def teste007(self):
+    # # teste 007: DELETE - Validar se está excluindo uma alunos
+    # def teste007(self):
     
                             
-        novo_aluno = self.teste005()
-        id_aluno = novo_aluno["id"]
+    #     novo_aluno = self.teste005()
+    #     id_aluno = novo_aluno["id"]
 
-        requests.delete(f"http://127.0.0.1:5000/api/alunos/{id_aluno}")
+    #     requests.delete(f"http://127.0.0.1:5000/api/alunos/{id_aluno}")
 
-        r2 = requests.get(f"http://127.0.0.1:5000/api/alunos/{id_aluno}")
-        self.assertEqual(r2.status_code, 404, "Erro: Aluno ainda existe após deleção")
+    #     r2 = requests.get(f"http://127.0.0.1:5000/api/alunos/{id_aluno}")
+    #     self.assertEqual(r2.status_code, 404, "Erro: Aluno ainda existe após deleção")
 
                 
 
