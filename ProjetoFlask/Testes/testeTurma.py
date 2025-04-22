@@ -46,9 +46,30 @@ class TestProduct(unittest.TestCase):
 
     # teste 005: POST - Validar se está adicionando uma turma
     def teste005(self):
+<<<<<<< HEAD
+        # Dados a serem enviados no corpo da requisição
+        payload = {
+            "nome": "ads2",
+            "turno": "noite",
+            "professor_id": 2
+        }
+        # Envia a requisição POST com os dados no corpo
+        r = requests.post('http://127.0.0.1:5000/api/turma', json=payload)
+        
+        # Verifica o status da resposta
+        self.assertEqual(r.status_code, 200, "Erro: Status code inesperado")
+        
+        # Verifica o conteúdo da resposta
+        dados = r.json()
+        self.assertIn("turma_adicionada", dados, "Erro: Resposta não contém 'turma_adicionada'")
+        id = dados['turma_adicionada']['id']
+        
+        # Verifica se a turma foi adicionada corretamente
+=======
         r = requests.post('http://127.0.0.1:5000/api/turma?nome=ads2&turno=noite&professor_id=2')
         dados = r.json()     
         id = dados['turma_adicionada']['id']['id']
+>>>>>>> 3a9ed188ab87db7ac3bb07925be1767065734163
         r2 = requests.get(f'http://127.0.0.1:5000/api/turma?id={id}')
         dados2 = r2.json()
         self.assertEqual(dados2['turma']['id'], id, "Erro ao adicionar turma")
@@ -56,6 +77,51 @@ class TestProduct(unittest.TestCase):
     
     # teste 006: PUT - Validar se está editando uma turma
     def teste006(self):
+<<<<<<< HEAD
+        # Adiciona uma nova turma
+        dados2 = self.teste005()
+        
+        # Atualiza a turma adicionada
+        payload = {
+            "nome": "Nome(alterado)",
+            "turno": "Noite",
+            "professor_id": 1,
+            "ativo": True
+        }
+        requests.put(f"http://127.0.0.1:5000/api/turma?id={dados2['turma']['id']}", json=payload)
+
+        # Obtém todas as turmas
+        dados3 = self.teste001()
+        
+        # Itera sobre a lista de turmas para verificar a atualização
+        for listaTurmas in dados3:  # `dados3` é uma lista, não um dicionário
+            if listaTurmas['id'] == dados2['turma']['id']:
+                self.assertEqual(listaTurmas['nome'], 'Nome(alterado)', "Erro ao editar turma")
+
+
+    def teste007(self):
+        # Setup - cria uma turma de teste
+        test_turma = self.teste005()
+        turma_id = test_turma['turma']['id']
+        
+        # Verifica se a turma existe antes da exclusão
+        initial_turmas = self.teste001()
+        self.assertIn(turma_id, [t['id'] for t in initial_turmas], 
+                    "Turma deveria existir antes da exclusão")
+        
+        # Deleta a turma
+        delete_url = f"http://127.0.0.1:5000/api/turma?id={turma_id}"
+        response = requests.delete(delete_url)
+        
+        # Verifica se a exclusão foi bem-sucedida
+        self.assertEqual(response.status_code, 200, 
+                        "DELETE request deveria retornar status 200")
+        
+        # Verifica se a turma não existe mais
+        updated_turmas = self.teste001()
+        self.assertNotIn(turma_id, [t['id'] for t in updated_turmas], 
+                        "Turma deveria ser removida após exclusão")
+=======
         dados2 = self.teste005()
         
         r = requests.put(f"http://127.0.0.1:5000/api/turma?" + "id={dados2['turma']['id']}&nome=Nome(alterado)&turno=Noite&professor_id=1")
@@ -92,6 +158,7 @@ class TestProduct(unittest.TestCase):
         updated_turmas = self.teste001()
         self.assertNotIn(turma_id, [t['id'] for t in updated_turmas['turmas']], 
                         "Turma should be removed after deletion")
+>>>>>>> 3a9ed188ab87db7ac3bb07925be1767065734163
         
 
 
