@@ -31,6 +31,9 @@ def inicializar_banco():
             nome TEXT NOT NULL,
             idade INTEGER NOT NULL,
             turma_id INTEGER NOT NULL,
+            nota_primeiro_semestre REAL,
+            nota_segundo_semestre REAL,
+            media_final REAL,
             FOREIGN KEY (turma_id) REFERENCES turmas (id)
         )
     ''')
@@ -38,7 +41,6 @@ def inicializar_banco():
     # Verificar se a tabela professores já possui registros
     cursor.execute("SELECT COUNT(*) FROM professores")
     if cursor.fetchone()[0] == 0:
-        # Inserir valores na tabela professores
         professores = [
             ("João Silva", "Matemática"),
             ("Maria Oliveira", "História"),
@@ -48,14 +50,13 @@ def inicializar_banco():
         ]
         cursor.executemany("INSERT INTO professores (nome, disciplina) VALUES (?, ?)", professores)
 
-    # Buscar os IDs reais dos professores
+    # Buscar IDs reais dos professores
     cursor.execute("SELECT id FROM professores ORDER BY id")
     professores_ids = [row[0] for row in cursor.fetchall()]
 
-    # Verificar se a tabela turmas já possui registros
+    # Inserir turmas (se não existirem)
     cursor.execute("SELECT COUNT(*) FROM turmas")
     if cursor.fetchone()[0] == 0:
-        # Inserir valores na tabela turmas usando os IDs reais dos professores
         turmas = [
             ("Turma A", "Manhã", professores_ids[0], True),
             ("Turma B", "Tarde", professores_ids[1], True),
@@ -65,10 +66,9 @@ def inicializar_banco():
         ]
         cursor.executemany("INSERT INTO turmas (nome, turno, professor_id, ativo) VALUES (?, ?, ?, ?)", turmas)
 
-    # Verificar se a tabela alunos já possui registros
+    # Inserir alunos iniciais (sem notas, se não existirem)
     cursor.execute("SELECT COUNT(*) FROM alunos")
     if cursor.fetchone()[0] == 0:
-        # Inserir valores na tabela alunos
         alunos = [
             ("Pedro Santos", 15, 1),
             ("Julia Almeida", 16, 2),
@@ -78,7 +78,6 @@ def inicializar_banco():
         ]
         cursor.executemany("INSERT INTO alunos (nome, idade, turma_id) VALUES (?, ?, ?)", alunos)
 
-    # Salvar alterações e fechar conexão
     conexao.commit()
     conexao.close()
     print("Banco de dados inicializado com sucesso!")
