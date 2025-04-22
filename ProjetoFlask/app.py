@@ -3,6 +3,13 @@ from controllers.alunos_controller import alunos_bp
 from controllers.professores_controller import professores_bp
 from controllers.turmas_controller import turmas_bp
 
+from models.BancoSQLite import inicializar_banco
+
+playBD = True
+if playBD == True:
+    inicializar_banco()
+playBD = False
+
 app = Flask(__name__)
 
 app.register_blueprint(alunos_bp)

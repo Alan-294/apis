@@ -1,7 +1,10 @@
 import random
 from flask import jsonify, request
 from .BD import dados
+import sqlite3
 
+def conectar_banco():
+    return sqlite3.connect("banco_de_dados.db")
 
 def criar_id():
     novo_id = random.randint(1000, 9999)
@@ -9,11 +12,14 @@ def criar_id():
         return novo_id  
     
 def adiciona_aluno(aluno):
+    conectar_banco()
     mediaFinal = (aluno['nota_primeiro_semestre'] + aluno['nota_segundo_semestre']) / 2
 
     aluno['media_final'] = mediaFinal
     aluno['id'] = criar_id()
     dados['alunos'].append(aluno)
+
+
     return jsonify(aluno)
 
 def lista_alunos():

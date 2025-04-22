@@ -1,3 +1,4 @@
+
 dados = {"alunos":[
         {"id": 1009,
         "nome": "João Pedro",
@@ -204,3 +205,4 @@ professores_db = [
     ]
 } 
 """
+
