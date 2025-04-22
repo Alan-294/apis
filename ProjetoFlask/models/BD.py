@@ -1,4 +1,7 @@
+<<<<<<< HEAD
 
+=======
+>>>>>>> 3a9ed188ab87db7ac3bb07925be1767065734163
 dados = {"alunos":[
         {"id": 1009,
         "nome": "João Pedro",
@@ -204,5 +207,9 @@ professores_db = [
         # ... Outros alunos
     ]
 } 
+<<<<<<< HEAD
 """
 
+=======
+"""
+>>>>>>> 3a9ed188ab87db7ac3bb07925be1767065734163
