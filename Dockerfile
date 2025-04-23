@@ -1,6 +1,5 @@
 # Use uma imagem base com Python pré-instalado
-FROM python:3.11-slim
-
+FROM python:3.13-slim
 # Informações sobre a imagem
 LABEL version="1.0"
 LABEL description="This is a sample image"

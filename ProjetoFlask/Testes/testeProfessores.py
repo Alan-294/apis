@@ -1,9 +1,13 @@
 import unittest
 import requests  # Biblioteca para requisições HTTP
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+from config import BASE_URL
 
 class TestProfessoresAPI(unittest.TestCase):
 
-    BASE_URL = "http://127.0.0.1:5000/api/professores"
+    BASE_URL = BASE_URL + "/api/professores"
     def test_001_verificar_rota_professores(self):
         """Verifica se a rota /professores está funcionando."""
         r = requests.get(self.BASE_URL)
