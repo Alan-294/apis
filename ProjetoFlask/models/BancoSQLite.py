@@ -78,6 +78,26 @@ def inicializar_banco():
         ]
         cursor.executemany("INSERT INTO alunos (nome, idade, turma_id) VALUES (?, ?, ?)", alunos)
 
+    # Atualizar alunos existentes com notas iniciais
+    cursor.execute("SELECT COUNT(*) FROM alunos WHERE nota_primeiro_semestre IS NOT NULL AND nota_segundo_semestre IS NOT NULL and media_final IS NOT NULL")
+    if cursor.fetchone()[0] == 0:
+        # Definindo notas iniciais
+        notas_iniciais = [
+            (8.0, 7.5, 1),
+            (9.0, 8.5, 2),
+            (7.0, 6.5, 3),
+            (10.0, 9.5, 4),
+            (6.0, 5.5, 5)
+        ]
+        # Atualizando as notas dos alunos
+        for nota_primeiro_semestre, nota_segundo_semestre, aluno_id in notas_iniciais:
+            cursor.execute('''
+                UPDATE alunos
+                SET nota_primeiro_semestre = ?, nota_segundo_semestre = ?, media_final = (nota_primeiro_semestre + nota_segundo_semestre) / 2
+                WHERE id = ?
+            ''', (nota_primeiro_semestre, nota_segundo_semestre, aluno_id))
+            conexao.commit()
+
     conexao.commit()
     conexao.close()
     print("Banco de dados inicializado com sucesso!")

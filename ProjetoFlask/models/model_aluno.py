@@ -92,14 +92,19 @@ def update_aluno(id_aluno):
 
     novo_aluno = request.json
 
+    # Atualizar um aluno com as médias
     cursor.execute('''
         UPDATE alunos
-        SET nome = ?, idade = ?, turma_id = ?
+        SET nome = ?, idade = ?, turma_id = ?, 
+            nota_primeiro_semestre = ?, nota_segundo_semestre = ?, 
+            media_final = (nota_primeiro_semestre + nota_segundo_semestre) / 2
         WHERE id = ?
     ''', (
         novo_aluno.get('nome'),
         novo_aluno.get('idade'),
         novo_aluno.get('turma_id'),
+        novo_aluno.get('nota_primeiro_semestre'),
+        novo_aluno.get('nota_segundo_semestre'),
         id_aluno
     ))
 
