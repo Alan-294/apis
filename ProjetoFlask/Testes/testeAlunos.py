@@ -1,6 +1,10 @@
 import unittest
 from flask import request  # Import do Flask (caso esteja usando)
 import requests  # Biblioteca para requisições HTTP
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+from config import BASE_URL
 
 class TestProduct(unittest.TestCase):
     def test001(self):
@@ -10,7 +14,7 @@ class TestProduct(unittest.TestCase):
 
     # Teste 001: Verificar se a rota /alunos está funcionando!
     def teste001(self):
-        r = requests.get('http://127.0.0.1:5000/api/alunos')
+        r = requests.get(f'{BASE_URL}/api/alunos')
         self.assertEqual(r.status_code, 200, "Erro na URL")
         
         try:
@@ -23,7 +27,7 @@ class TestProduct(unittest.TestCase):
     # teste 002: verificar se estar retornando um valor json.
 
     def teste002(self):
-        r = requests.get('http://127.0.0.1:5000/api/alunos')
+        r = requests.get(f'{BASE_URL}/api/alunos')
         if r.headers['Content-Type'] == 'application/json':
             self.assertTrue(True)
             
@@ -34,7 +38,7 @@ class TestProduct(unittest.TestCase):
     # teste 003: GeT com id - Validar se estar retornando alunos com uma id valida
 
     def teste003(self):
-        r = requests.get('http://127.0.0.1:5000/api/alunos/1') 
+        r = requests.get(f'{BASE_URL}/api/alunos/1') 
         
         try:
             dados = r.json()
@@ -48,7 +52,7 @@ class TestProduct(unittest.TestCase):
         
     # teste 004: GET com id - Validar se estar retornando alunos com um id especifico que não existe
     def teste004(self):    
-        r = requests.get('http://127.0.0.1:5000/api/alunos/1008')
+        r = requests.get(f'{BASE_URL}/api/alunos/1008')
         
         
         try:
@@ -71,7 +75,7 @@ class TestProduct(unittest.TestCase):
             "nota_segundo_semestre": 10
         }
 
-        r = requests.post('http://127.0.0.1:5000/api/alunos', json=novo_aluno)
+        r = requests.post(f'{BASE_URL}/api/alunos', json=novo_aluno)
 
         if r.status_code != 201:
             self.fail(f"Erro ao adicionar aluno. Status: {r.status_code}, Resposta: {r.text}")
@@ -87,7 +91,7 @@ class TestProduct(unittest.TestCase):
             self.fail("Erro: ID do aluno não retornado corretamente")
 
         # Verifica se os dados do aluno batem com os enviados
-        r2 = requests.get(f'http://127.0.0.1:5000/api/alunos/{id}')
+        r2 = requests.get(f'{BASE_URL}/api/alunos/{id}')
         
         if r2.status_code != 200:
             self.fail(f"Erro ao buscar aluno recém-criado. Status: {r2.status_code}, Resposta: {r2.text}")
@@ -107,7 +111,7 @@ class TestProduct(unittest.TestCase):
         dados2 = self.teste005() 
         aluno_id = dados2['id']
         
-        r = requests.put(f'http://127.0.0.1:5000/api/alunos/{aluno_id}',
+        r = requests.put(f'{BASE_URL}/api/alunos/{aluno_id}',
                         json={'nome': 'Gohan',
                             'data_nascimento': '31-10-2003',
                             'nota_primeiro_semestre': 4,
@@ -142,9 +146,9 @@ class TestProduct(unittest.TestCase):
         novo_aluno = self.teste005()
         id_aluno = novo_aluno["id"]
 
-        requests.delete(f"http://127.0.0.1:5000/api/alunos/{id_aluno}")
+        requests.delete(f"{BASE_URL}/api/alunos/{id_aluno}")
 
-        r2 = requests.get(f"http://127.0.0.1:5000/api/alunos/{id_aluno}")
+        r2 = requests.get(f"{BASE_URL}/api/alunos/{id_aluno}")
         self.assertEqual(r2.status_code, 404, "Erro: Aluno ainda existe após deleção")
 
                 
