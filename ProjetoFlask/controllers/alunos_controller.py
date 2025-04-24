@@ -15,7 +15,7 @@ def obter_aluno(aluno_id):
     return model_aluno.consulta_aluno(aluno_id)
 
 # POST /api/alunos - Cria um novo aluno
-@alunos_bp.route('/', methods=['POST'])
+@alunos_bp.route('/alunos', methods=['POST'])
 def criar_aluno():
     aluno = request.get_json()
     return model_aluno.adiciona_aluno(aluno)
