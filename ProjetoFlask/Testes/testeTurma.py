@@ -65,7 +65,12 @@ class TestProduct(unittest.TestCase):
         r2 = requests.get(f'{BASE_URL}/api/turma?id={id}')
         dados2 = r2.json()
         self.assertEqual(dados2['turma']['id'], id, "Erro ao adicionar turma")
-        return dados2
+        dados3 = dados2
+        delete_url = f"{BASE_URL}/api/turma?id={id-1}"
+        # Deleta a turma criada para evitar poluição de dados
+        response = requests.delete(delete_url)
+        
+        return dados3 
     
     # teste 006: PUT - Validar se está editando uma turma
     def teste006(self):
@@ -88,6 +93,10 @@ class TestProduct(unittest.TestCase):
         for listaTurmas in dados3:  # `dados3` é uma lista, não um dicionário
             if listaTurmas['id'] == dados2['turma']['id']:
                 self.assertEqual(listaTurmas['nome'], 'Nome(alterado)', "Erro ao editar turma")
+                
+        delete_url = f"{BASE_URL}/api/turma?id={dados2['turma']['id']}"
+        # Deleta a turma criada para evitar poluição de dados
+        response = requests.delete(delete_url)
 
 
     def teste007(self):
