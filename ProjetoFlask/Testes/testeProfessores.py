@@ -1,10 +1,13 @@
 import unittest
 import requests  # Biblioteca para requisições HTTP
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+from config import BASE_URL
 
 class TestProfessoresAPI(unittest.TestCase):
 
-    BASE_URL = "http://127.0.0.1:5000/api/professores"
-
+    BASE_URL = BASE_URL + "/api/professores"
     def test_001_verificar_rota_professores(self):
         """Verifica se a rota /professores está funcionando."""
         r = requests.get(self.BASE_URL)
@@ -17,10 +20,12 @@ class TestProfessoresAPI(unittest.TestCase):
 
     def test_003_get_professor_por_id_valido(self):
         """Verifica se um professor com ID válido é retornado corretamente."""
+        
         r = requests.get(f"{self.BASE_URL}/1")
         self.assertEqual(r.status_code, 200, "Erro: ID não encontrado")
 
         dados = r.json()
+        
         self.assertEqual(dados["id"], 1, "ID incorreto")
 
     def test_004_get_professor_por_id_invalido(self):
@@ -46,6 +51,7 @@ class TestProfessoresAPI(unittest.TestCase):
 
         dados = r.json()
         self.assertIn("id", dados, "Erro: ID do professor não retornado corretamente")
+
         return dados["id"]  # Retorna o ID para os próximos testes
 
     def test_006_put_editar_professor(self):
@@ -68,6 +74,8 @@ class TestProfessoresAPI(unittest.TestCase):
 
         dados_atualizados = r2.json()
         self.assertEqual(dados_atualizados["nome"], "Carlos Editado", "Erro ao atualizar nome do professor")
+        
+        requests.delete(f"{self.BASE_URL}/{professor_id}")  # Limpeza após o teste
 
     def test_007_delete_professor(self):
         """Verifica se a API exclui um professor corretamente."""
