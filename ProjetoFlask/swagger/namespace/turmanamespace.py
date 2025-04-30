@@ -3,7 +3,7 @@ from models.model_turmas import *
 
 turma_ns = Namespace("Turmas", description="Operações relacionadas as turmas")
 
-turma_model = turma_ns.model("Turmas", {
+turma_model = turmas_ns.model("Turmas", {
     "turma_id": fields.Integer(required=True, description="Id da turma"),
     "nome": fields.String(required=True, description="Nome da turma)"),
     "turno": fields.Float(required=True, description="Turno da turma, manhã, tarde ou noite"),
@@ -11,7 +11,7 @@ turma_model = turma_ns.model("Turmas", {
     "ativo":fields.String(required=True, description="Status atual da turma relacionada"),
 })
 
-turma_output_model = turma_ns.model("TurmasOutput", {
+turma_output_model = turmas_ns.model("TurmasOutput", {
     "turma_id": fields.Integer(description="ID da turma"),
     "nome": fields.String(description="Nome da turma"),
     "data_nascimento": fields.String(description="Turno da turma, manhã, tarde ou noite"),
@@ -19,7 +19,7 @@ turma_output_model = turma_ns.model("TurmasOutput", {
     "ativo": fields.Float(description="Status atual da turma relacionada"),
 })
 
-@turma_ns.route("/")
+@turmas_ns.route("/")
 class TurmasResource(Resource):
     @turma_ns.marshal_list_with(turma_output_model)
     def get(self):

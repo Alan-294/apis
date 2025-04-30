@@ -1,11 +1,10 @@
-from flask import apis
-from . import api
-from swagger.namespace.alunosnamespace import alunos_ns
-from swagger.namespace.professornamespace import professores_ns
-from swagger.namespace.turmanamespace import turmas_ns
+from .swagger_init import api
 
-# Função para registrar os namespaces
 def configure_swagger(app):
+    from namespace.alunosnamespace import alunos_ns
+    from namespace.professornamespace import professores_ns
+    from namespace.turmanamespace import turmas_ns
+
     api.init_app(app)
     api.add_namespace(alunos_ns, path="/alunos")
     api.add_namespace(professores_ns, path="/professores")
