@@ -1,20 +1,4 @@
-dados = {"alunos":[
-        {"id": 1009,
-        "nome": "João Pedro",
-        "data_nascimento": "2000-01-01",
-        "nota_primeiro_semestre": 10.0,
-        "nota_segundo_semestre": 8.0,
-        "turma_id": 6,
-        "mediaFinal": 9},{
-            "id": 3029,
-        "nome": "André Augusto",
-        "data_nascimento": "1998-09-05",
-        "nota_primeiro_semestre": 8.0,
-        "nota_segundo_semestre": 6.0,
-        "turma_id": 6,
-        "mediaFinal": 7
-        }
-                  ], 
+dados = {
         "professores":[
     {
         "id": 1,
