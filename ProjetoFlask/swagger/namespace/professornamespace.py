@@ -1,4 +1,4 @@
-from flask import Namespace, Resource, fields
+from flask_restx import Namespace, Resource, fields
 from models.model_professores import *
 
 professores_ns = Namespace("professores", description="Operações relacionadas aos professores")

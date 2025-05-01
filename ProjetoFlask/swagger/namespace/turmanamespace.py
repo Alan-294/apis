@@ -1,7 +1,8 @@
-from flask import Namespace, Resource, fields
+from flask_restx import Namespace, Resource, fields
 from models.model_turmas import *
+from controllers.turmas_controller import *
 
-turma_ns = Namespace("Turmas", description="Operações relacionadas as turmas")
+turmas_ns = Namespace("Turmas", description="Operações relacionadas as turmas")
 
 turma_model = turmas_ns.model("Turmas", {
     "turma_id": fields.Integer(required=True, description="Id da turma"),
@@ -21,12 +22,12 @@ turma_output_model = turmas_ns.model("TurmasOutput", {
 
 @turmas_ns.route("/")
 class TurmasResource(Resource):
-    @turma_ns.marshal_list_with(turma_output_model)
+    @turmas_ns.marshal_list_with(turma_output_model)
     def get(self):
         """Lista todas as turmas"""
-        return consulta_turmas()
+        return consulta_turma()
 
-    @turmas_ns.expect(turmas_model)
+    @turmas_ns.expect(turma_model)
     def post(self):
         """Cria uma nova turma"""
         data = turmas_ns.payload
@@ -35,19 +36,19 @@ class TurmasResource(Resource):
 
 @turmas_ns.route("/<int:id_turmas>")
 class TurmasIdResource(Resource):
-    @turmas_ns.marshal_with(turmas_output_model)
-    def get(self, id_professor):
+    @turmas_ns.marshal_with(turma_output_model)
+    def get(self, turma_id):
         """Consulta uma turma pelo ID"""
         return consulta_turma(turma_id)
 
-    @turmas_ns.expect(turmas_model)
-    def put(self, id_professor):
+    @turmas_ns.expect(turma_model)
+    def put(self, turma_id):
         """Atualiza uma turma"""
         data = turmas_ns.payload
-        atualiza_turma()
+        atualiza_turma(turma_id)
         return data, 200
 
-    def delete(self, id_professores):
+    def delete(self, turma_id):
         """Exclui uma turma pelo ID"""
-        deleta_turma()
+        deleta_turma(turma_id)
         return {"message": "Turma excluída com sucesso"}, 200
