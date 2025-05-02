@@ -1,6 +1,7 @@
 import unittest
 from flask import request  # Import do Flask (caso esteja usando)
 import requests  # Biblioteca para requisições HTTP
+import time
 
 class TestProduct(unittest.TestCase):
     def test001(self):
@@ -78,7 +79,7 @@ class TestProduct(unittest.TestCase):
             dados = r.json()  
         except requests.exceptions.JSONDecodeError:
             self.fail("Erro: resposta não é um JSON válido")
-            
+        time.sleep(0.1)
         id = dados.get("id")
     
         if not id:

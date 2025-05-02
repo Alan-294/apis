@@ -1,6 +1,5 @@
 import random
 from flask import jsonify, request
-from .BD import dados
 import mysql.connector
 
 db_config = {
@@ -11,9 +10,20 @@ db_config = {
     'port': 3306  
 }
 def criar_id():
-    novo_id = random.randint(1000, 9999)
-    if not any(aluno["id"] == novo_id for aluno in dados["alunos"]):  
-        return novo_id  
+    conexao = mysql.connector.connect(**db_config)
+    cursor = conexao.cursor()
+
+    while True:
+        novo_id = random.randint(1000, 9999)
+        cursor.execute("SELECT id FROM alunos WHERE id = %s", (novo_id,))
+        resultado = cursor.fetchone()
+
+        if resultado is None:
+            break 
+
+    cursor.close()
+    conexao.close()
+    return novo_id
     
 def adiciona_aluno(aluno):
     mediaFinal = (aluno['nota_primeiro_semestre'] + aluno['nota_segundo_semestre']) / 2
@@ -79,7 +89,6 @@ class AlunoNaoEncontrado(Exception):
     pass 
 
 def update_aluno(id_aluno):
-
     try:
         dados = request.get_json()
         conexao = mysql.connector.connect(**db_config)
@@ -153,9 +162,12 @@ def consulta_aluno(aluno_id):
 
         sql = "SELECT * FROM alunos WHERE id = %s"
         cursor.execute(sql, (aluno_id,))
-        resultado = cursor.fetchall()
-
-        return jsonify(resultado)
+        resultado = cursor.fetchone()
+        if resultado:
+            return jsonify(resultado)
+        else:
+            return jsonify({"mensagem": "Aluno não encontrado"}), 404
+                
     
     except mysql.connector.Error as erro:
         return jsonify({'erro': str(erro)}), 500
