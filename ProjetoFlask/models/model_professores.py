@@ -1,6 +1,6 @@
 from flask import Flask,jsonify, request
-from .BD import dados 
 import mysql.connector
+import random
 
 db_config = {
     'host': '127.0.0.1',
@@ -10,6 +10,22 @@ db_config = {
     'port': 3306  
 }
 
+def criar_id():
+    conexao = mysql.connector.connect(**db_config)
+    cursor = conexao.cursor()
+
+    while True:
+        novo_id = random.randint(1000, 9999)
+        cursor.execute("SELECT id FROM professores WHERE id = %s", (novo_id,))
+        resultado = cursor.fetchone()
+
+        if resultado is None:
+            break 
+
+    cursor.close()
+    conexao.close()
+    return novo_id
+    
 def professores():
     try:
         conexao = mysql.connector.connect(**db_config)
@@ -36,7 +52,11 @@ def professorPorId(professor_id):
         cursor.execute(sql, (professor_id,))
         resultado = cursor.fetchone()
 
-        return jsonify(resultado)
+        if resultado:
+            return jsonify(resultado)
+        else:
+            return jsonify({"mensagem": "Professor não encontrado"}), 404
+         
     
     except mysql.connector.Error as erro:
         return jsonify({'erro': str(erro)}), 500
@@ -48,14 +68,15 @@ def professorPorId(professor_id):
 
 def cria_professor():
     professor = request.get_json()
+    professor['id'] = criar_id()
+    conexao = None
     try:
         conexao = mysql.connector.connect(**db_config)
         cursor = conexao.cursor()
-
         sql = """
             INSERT INTO professores (
                 id, nome, data_nascimento,
-                disciplina, salario, observações
+                disciplina, salario, observacoes
             )
             VALUES (%s, %s, %s, %s, %s, %s)
         """
@@ -65,7 +86,7 @@ def cria_professor():
             professor['data_nascimento'],
             professor['disciplina'],
             professor['salario'],
-            professor['observções']
+            professor['observacoes']
         )
 
         cursor.execute(sql, valores)
@@ -78,9 +99,9 @@ def cria_professor():
         if conexao and conexao.is_connected():
             cursor.close()
             conexao.close()
+    return jsonify(professor)
 
-
-def atualiza_professor(id):
+def atualiza_professor(id_professor):
     try:
         professor = request.get_json()
         conexao = mysql.connector.connect(**db_config)
@@ -92,18 +113,16 @@ def atualiza_professor(id):
                 data_nascimento = %s,
                 disciplina = %s,
                 salario = %s,
-                media_final = %s,
-                observações = %s
+                observacoes = %s
             WHERE id = %s
         """
         valores = (
-            professor['id'],
             professor['nome'],
             professor['data_nascimento'],
             professor['disciplina'],
             professor['salario'],
-            professor['observções'],
-            id
+            professor['observacoes'],
+            id_professor
         )
 
         cursor.execute(sql, valores)

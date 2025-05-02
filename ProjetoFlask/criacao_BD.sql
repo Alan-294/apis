@@ -4,7 +4,7 @@ CREATE TABLE professores(
     data_nascimento DATE,
     disciplina VARCHAR(40),
     salario FLOAT,
-    observações VARCHAR(150)
+    observacoes VARCHAR(150)
 );
 
 CREATE TABLE turmas(
@@ -34,7 +34,7 @@ INSERT INTO professores (
     data_nascimento,
     disciplina,
     salario,
-    observações
+    observacoes
 ) VALUES (
     1,
     'Carlos Silva',

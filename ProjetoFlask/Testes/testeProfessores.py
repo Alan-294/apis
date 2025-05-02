@@ -1,5 +1,5 @@
 import unittest
-import requests  # Biblioteca para requisições HTTP
+import requests  
 
 class TestProfessoresAPI(unittest.TestCase):
 
@@ -18,11 +18,14 @@ class TestProfessoresAPI(unittest.TestCase):
         """Verifica se um professor com ID válido é retornado corretamente."""
         
         r = requests.get(f"{self.BASE_URL}/1")
-        self.assertEqual(r.status_code, 200, "Erro: ID não encontrado")
-
-        dados = r.json()
-        
-        self.assertEqual(dados["id"], 1, "ID incorreto")
+        try:
+            dados = r.json()
+            if 'id' in dados:
+                self.assertEqual(dados['id'], 1, "Erro ID não encontrado")
+            else:
+                self.fail("Resposta não contém 'id'")
+        except requests.exceptions.JSONDecodeError:
+            self.fail("Erro: resposta não é um JSON válido")
 
     def test_004_get_professor_por_id_invalido(self):
         """Verifica se a API retorna erro ao buscar um ID inexistente."""
@@ -39,7 +42,7 @@ class TestProfessoresAPI(unittest.TestCase):
             "data_nascimento": "1990-05-12",
             "disciplina": "Física",
             "salario": 3000,
-            "Observações": "Nenhuma"
+            "observacoes": "Nenhuma"
         }
 
         r = requests.post(self.BASE_URL, json=novo_professor)
@@ -56,9 +59,9 @@ class TestProfessoresAPI(unittest.TestCase):
         novos_dados = {
             "nome": "Carlos Editado",
             "data_nascimento": "1990-05-12",
-            "disciplina": "Física Avançada",
+            "disciplina": "Fisica Avançada",
             "salario": 3200,
-            "Observações": "Atualizado"
+            "observacoes": "Atualizado"
         }
 
         r = requests.put(f"{self.BASE_URL}/{professor_id}", json=novos_dados)

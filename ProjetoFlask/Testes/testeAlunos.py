@@ -1,6 +1,6 @@
 import unittest
-from flask import request  # Import do Flask (caso esteja usando)
-import requests  # Biblioteca para requisições HTTP
+from flask import request  
+import requests 
 import time
 
 class TestProduct(unittest.TestCase):
