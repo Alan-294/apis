@@ -1,4 +1,6 @@
-from flask import jsonify, request
+from flask import Flask,jsonify, request
+import random
+from .BD import dados
 import mysql.connector
 
 db_config = {
@@ -8,87 +10,132 @@ db_config = {
     'database': 'banco_escolar',
     'port': 3306  
 }
-# Função principal para gerenciar turmas
-def apiTurma():
-    metodo = request.method
+def criar_id():
     conexao = mysql.connector.connect(**db_config)
     cursor = conexao.cursor()
 
-    try:
-        if metodo == "GET":
-                    if request.args.get('id'):
-                        # Buscar turma por ID
-                        id_turma = request.args.get('id')
-                        comando = "SELECT * FROM turmas WHERE id = ?"
-                        turma = cursor.execute(comando, (id_turma,)).fetchone()
-                        if turma:
-                            turma_dict = {
-                                "id": turma[0],
-                                "nome": turma[1],
-                                "turno": turma[2],
-                                "professor_id": turma[3],
-                                "ativo": turma[4]
-                            }
-                            # Retorna a turma dentro de uma chave "turma"
-                            return jsonify({"turma": turma_dict}), 200
-                        else:
-                            # Retorna um código de erro no formato esperado
-                            return jsonify({"code": 404, "mensagem": "Turma não encontrada"}), 404
-                    else:
-                        # Listar todas as turmas
-                        comando = "SELECT * FROM turmas"
-                        todasAsTurmas = cursor.execute(comando).fetchall()
-                        turmas_list = [
-                            {"id": turma[0], "nome": turma[1], "turno": turma[2], "professor_id": turma[3], "ativo": turma[4]}
-                            for turma in todasAsTurmas
-                        ]
-                        return jsonify(turmas_list), 200
-        elif metodo == "POST":
-            # Adicionar uma nova turma
-            dados = request.get_json()
-            cursor.execute(
-                "INSERT INTO turmas (nome, turno, professor_id, ativo) VALUES (?, ?, ?, ?)",
-                (dados['nome'], dados['turno'], dados['professor_id'], True)
+    while True:
+        novo_id = random.randint(1000, 9999)
+        cursor.execute("SELECT id FROM turmas WHERE id = %s", (novo_id,))
+        resultado = cursor.fetchone()
+
+        if resultado is None:
+            break 
+
+    cursor.close()
+    conexao.close()
+    return novo_id
+    
+def apiTurma():
+    metodo = request.method
+
+    if metodo == "GET": # http://127.0.0.1:5000/api/turma 
+        id_turma = request.args.get('id')
+        if id_turma:
+            try:
+                conexao = mysql.connector.connect(**db_config)
+                cursor = conexao.cursor(dictionary=True)
+
+                sql = "SELECT * FROM turmas WHERE id = %s"
+                cursor.execute(sql, (id_turma,))
+                resultado = cursor.fetchone()
+                if resultado:
+                    return jsonify(resultado)
+
+                else:
+                    return jsonify({"mensagem": "Turma não encontrada"}), 404
+                        
+                    
+            except mysql.connector.Error as erro:
+                return jsonify({'erro': str(erro)}), 500
+
+            finally:
+                if 'conexao' in locals() and conexao.is_connected():
+                    cursor.close()
+                    conexao.close()
+        try:
+            conexao = mysql.connector.connect(**db_config)
+            cursor = conexao.cursor(dictionary=True)
+
+            cursor.execute("SELECT * FROM turmas")
+            resultado = cursor.fetchall()
+
+            return jsonify(resultado)
+        
+        except mysql.connector.Error as erro:
+            return jsonify({'erro': str(erro)}), 500
+
+        finally:
+            if 'conexao' in locals() and conexao.is_connected():
+                cursor.close()
+                conexao.close()
+    
+
+    
+    elif metodo == "POST": #http://127.0.0.1:5000/api/turma?nome=ads2&turno=tarde&professor_id=12345
+
+        turma['id'] = criar_id()
+        conexao = None
+        try:
+            conexao = mysql.connector.connect(**db_config)
+            cursor = conexao.cursor()
+
+            sql = """
+                INSERT INTO turmas (
+                    id, nome, turno, professor_id, ativo
+                    
+                )
+                VALUES (%s, %s, %s, %s, %s)
+            """
+            valores = (
+                turma['id'],
+                turma['nome'],
+                turma['turno'],
+                turma['professor_id'],
+                turma['ativo']
+                turma['id']
             )
+
+            cursor.execute(sql, valores)
             conexao.commit()
-            # Ajuste: Retorna a turma adicionada no formato esperado
-            return jsonify({
-                "mensagem": "Turma adicionada com sucesso",
-                "turma_adicionada": {
-                    "id": cursor.lastrowid,
-                    "nome": dados['nome'],
-                    "turno": dados['turno'],
-                    "professor_id": dados['professor_id'],
-                    "ativo": True
-                }
-            })
 
+        except Exception as e:
+            return jsonify({'erro': str(e)}), 500
 
-        elif metodo == "PUT":  # Atualizar uma turma existente
-            id_turma = request.args.get('id')
-            dados = request.get_json()
-            cursor.execute(
-                "UPDATE turmas SET nome = ?, turno = ?, professor_id = ?, ativo = ? WHERE id = ?",
-                (dados['nome'], dados['turno'], int(dados['professor_id']), dados['ativo'], int(id_turma))
-            )
-            conexao.commit()
-            if cursor.rowcount == 0:
-                # Ajuste: Retorna um código de erro no formato esperado
-                return jsonify({"mensagem": "Turma não encontrada"}), 404
-            return jsonify({"mensagem": "Turma atualizada com sucesso"}), 200
+        finally:
+            if conexao and conexao.is_connected():
+                cursor.close()
+                conexao.close()
 
-        elif metodo == "DELETE":  # Deletar uma turma
-            id_turma = request.args.get('id')
-            cursor.execute("DELETE FROM turmas WHERE id = ?", (id_turma,))
-            conexao.commit()
-            if cursor.rowcount == 0:
-                # Ajuste: Retorna um código de erro no formato esperado
-                return jsonify({"mensagem": "Turma não encontrada"}), 404
-            return jsonify({"mensagem": "Turma excluída com sucesso"}), 200
-
-        else:
-            return jsonify({"mensagem": "Método não permitido"}), 405
-
-    finally:
-        cursor.close()
-        conexao.close()
+        return jsonify(turma)
+    
+    
+    elif metodo == "DELETE": #http://127.0.0.1:5000/api/turma?id=1
+        id_turma = request.args.get('id')
+        for turma in dados['turmas']:
+            if turma['id'] == int(id_turma):
+                dados['turmas'].remove(turma)
+                return {"message": "Turma excluída com sucesso",
+                        "code": 200}
+            
+    
+    elif metodo == "PUT": #http://127.0.0.1:5000/api/turma?id=1&nome=ads2&turno=Noite&professor_id=13
+        id_turma = request.args.get('id')
+        nome = request.args.get('nome')  
+        turno = request.args.get('turno')  
+        professor_id = request.args.get('professor_id')
+        posicao = -1
+        for turma in dados['turmas']:
+            posicao += 1
+            if turma['id'] == int(id_turma):
+                break               
+        dados['turmas'][posicao] = {
+            "id": int(id_turma),
+            "nome": nome,
+            "turno": turno,
+            "professor_id": professor_id,
+            "ativo": True
+        }
+        return {"message" : "Turma atualizada com sucesso",
+                "code": 200,
+               }
