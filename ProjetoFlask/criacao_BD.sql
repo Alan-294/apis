@@ -53,7 +53,7 @@ INSERT INTO turmas (
     1,
     '3º Ano A',
     'Manhã',
-    5001,
+    1,
     TRUE
 );
 

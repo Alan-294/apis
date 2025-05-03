@@ -35,7 +35,7 @@ class TestProduct(unittest.TestCase):
         try:
             dados = r.json()
             if 'id' in dados:
-                self.assertEqual(dados['id'], 1009, "Erro ID não encontrado")
+                self.assertEqual(dados['id'], 1, "Erro ID não encontrado")
             else:
                 self.fail("Resposta não contém 'id'")
         except requests.exceptions.JSONDecodeError:
@@ -44,9 +44,13 @@ class TestProduct(unittest.TestCase):
     # teste 004: GET com id - Validar se estar retornando turma com um id especifico que não existe
     def teste004(self):    
         r = requests.get(f'{BASE_URL}/api/turma?id=-1')
-        dados = r.json()
-        if self.assertEqual(dados['code'], 404): 
-            self.assertTrue(True)
+    
+        try:
+            dados = r.json()
+   
+            self.assertTrue('mensagem' in dados, "Resposta não contém mensagem de erro esperada")
+        except requests.exceptions.JSONDecodeError:
+            self.fail("Erro: resposta não é um JSON válido")
 
     # teste 005: POST - Validar se está adicionando uma turma
     def teste005(self):
@@ -54,7 +58,8 @@ class TestProduct(unittest.TestCase):
         payload = {
             "nome": "ads2",
             "turno": "noite",
-            "professor_id": 2
+            "professor_id": 1,
+            "ativo": True
         }
         # Envia a requisição POST com os dados no corpo
         r = requests.post(f'{BASE_URL}/api/turma', json=payload)
@@ -70,11 +75,11 @@ class TestProduct(unittest.TestCase):
         # Verifica se a turma foi adicionada corretamente
         r2 = requests.get(f'{BASE_URL}/api/turma?id={id}')
         dados2 = r2.json()
-        self.assertEqual(dados2['turma']['id'], id, "Erro ao adicionar turma")
+        self.assertEqual(dados2['id'], id, "Erro ao adicionar turma")
         dados3 = dados2
-        delete_url = f"{BASE_URL}/api/turma?id={id-1}"
+       
         # Deleta a turma criada para evitar poluição de dados
-        response = requests.delete(delete_url)
+
         
         return dados3 
     
@@ -90,17 +95,17 @@ class TestProduct(unittest.TestCase):
             "professor_id": 1,
             "ativo": True
         }
-        requests.put(f"{BASE_URL}/api/turma?id={dados2['turma']['id']}", json=payload)
+        requests.put(f"{BASE_URL}/api/turma?id={dados2['id']}", json=payload)
 
         # Obtém todas as turmas
         dados3 = self.teste001()
         
         # Itera sobre a lista de turmas para verificar a atualização
         for listaTurmas in dados3:  # `dados3` é uma lista, não um dicionário
-            if listaTurmas['id'] == dados2['turma']['id']:
+            if listaTurmas['id'] == dados2['id']:
                 self.assertEqual(listaTurmas['nome'], 'Nome(alterado)', "Erro ao editar turma")
                 
-        delete_url = f"{BASE_URL}/api/turma?id={dados2['turma']['id']}"
+        delete_url = f"{BASE_URL}/api/turma?id={dados2['id']}"
         # Deleta a turma criada para evitar poluição de dados
         response = requests.delete(delete_url)
 
@@ -108,7 +113,7 @@ class TestProduct(unittest.TestCase):
     def teste007(self):
         # Setup - cria uma turma de teste
         test_turma = self.teste005()
-        turma_id = test_turma['turma']['id']
+        turma_id = test_turma['id']
         
         # Verifica se a turma existe antes da exclusão
         initial_turmas = self.teste001()
