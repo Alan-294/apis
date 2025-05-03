@@ -8,6 +8,13 @@ from config import app # Importa o arquivo config.py
 from models.BancoSQLite import inicializar_banco # Importa o arquivo BancoSQLite.py
 inicializar_banco()
 
+from swagger import swagger_init
+from swagger.swaggerconfig import configure_swagger
+
+
+
+
+configure_swagger(app)
 # Registra os blueprints
 app.register_blueprint(alunos_bp)
 app.register_blueprint(professores_bp)
