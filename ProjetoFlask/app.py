@@ -8,6 +8,13 @@ from config import app # Importa o arquivo config.py
 from models.BancoSQLite import inicializar_banco # Importa o arquivo BancoSQLite.py
 inicializar_banco()
 
+# Registra os blueprints
+app.register_blueprint(alunos_bp)
+app.register_blueprint(professores_bp)
+app.register_blueprint(turmas_bp)
+
+
+
 from swagger import swagger_init
 from swagger.swaggerconfig import configure_swagger
 
@@ -15,10 +22,7 @@ from swagger.swaggerconfig import configure_swagger
 
 
 configure_swagger(app)
-# Registra os blueprints
-app.register_blueprint(alunos_bp)
-app.register_blueprint(professores_bp)
-app.register_blueprint(turmas_bp)
+
 
 if __name__ == '__main__':
     app.run(host=app.config['HOST'], port=app.config['PORT'], debug=app.config['DEBUG'])
