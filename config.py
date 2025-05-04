@@ -15,4 +15,4 @@ else:
     BASE_URL = "http://" + app.config['HOST'] + ':' + str(app.config['PORT'])
 
 # Para o Render, use o seguinte URL
-#BASE_URL =  "https://app-flask-v0-1.onrender.com"
+BASE_URL =  "https://new-api-flask2.onrender.com"
