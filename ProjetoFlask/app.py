@@ -13,5 +13,16 @@ app.register_blueprint(alunos_bp)
 app.register_blueprint(professores_bp)
 app.register_blueprint(turmas_bp)
 
+
+
+from swagger import swagger_init
+from swagger.swaggerconfig import configure_swagger
+
+
+
+
+configure_swagger(app)
+
+
 if __name__ == '__main__':
     app.run(host=app.config['HOST'], port=app.config['PORT'], debug=app.config['DEBUG'])
