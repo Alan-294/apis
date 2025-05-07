@@ -1,2 +1,5 @@
-git rm -r --cached __pycache__
+# Ignorar arquivos de cache do Python
+__pycache__/
+*.pyc
+*.pyo
 
