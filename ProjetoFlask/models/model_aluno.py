@@ -8,7 +8,6 @@ def conectar_banco():
     return conexao
 
 # Adicionar um novo aluno
-
 def adiciona_aluno(aluno):
     # Validate JSON payload
     if not aluno:
@@ -18,7 +17,6 @@ def adiciona_aluno(aluno):
     for campo in campos_obrigatorios:
         if campo not in aluno:
             return jsonify({"erro": f"Campo obrigatório ausente: {campo}"}), 400
-
     try:
         idade = int(aluno['idade'])
         turma_id = int(aluno['turma_id'])
@@ -27,7 +25,7 @@ def adiciona_aluno(aluno):
         media_final = (nota1 + nota2) / 2
     except ValueError:
         return jsonify({"erro": "Idade, turma_id e notas devem ser números válidos"}), 400
-
+    
     conexao = conectar_banco()
     cursor = conexao.cursor()
 
