@@ -4,22 +4,10 @@ Este é um projeto Flask que fornece uma API RESTful para gerenciar alunos e tur
 
 ## Relatorios
 
-<<<<<<< HEAD
-- [Parte 1]
-- [Parte 2]
-- [Parte 3]
+- [Parte 1][https://github.com/JoaoPedro-SA/apis/blob/Desenvolvimento/Relat%C3%B3rio%20API.pdf]
+- [Parte 2][https://github.com/JoaoPedro-SA/apis/blob/Desenvolvimento/Relat%C3%B3rio2%20API.pdf]
+- [Parte 3][https://github.com/JoaoPedro-SA/apis/blob/Desenvolvimento/Relat%C3%B3rio3%20API.pdf]
 - [Relatorios /docs](https://new-api-flask2.onrender.com/docs)
-=======
-### Parte 1
-
-### Parte 2
-
-### Parte 3
-
-### Relatorio /docs
-
-[Relatorios /docs](https://new-api-flask2.onrender.com/docs)
->>>>>>> ef007f32498cb42a00d61aac7f960bafcc0bcaf8
 
 ## 🚀 Tecnologias Utilizadas
 
