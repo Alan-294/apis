@@ -1,9 +1,13 @@
 import sqlite3
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
+from config import banco_de_dados as bd
 
 def inicializar_banco():
-    conexao = sqlite3.connect("banco_de_dados.db")
+    conexao = sqlite3.connect(bd)
     conexao.execute("PRAGMA foreign_keys = ON")
-    cursor = conexao.cursor()
+    cursor = conexao.cursor() 
 
     # Criação das tabelas
     cursor.execute('''
@@ -101,3 +105,14 @@ def inicializar_banco():
     conexao.commit()
     conexao.close()
     print("Banco de dados inicializado com sucesso!")
+
+def chamarBanco():
+    conexao = sqlite3.connect(bd)
+    
+    return conexao
+
+
+
+
+
+
