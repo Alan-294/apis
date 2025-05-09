@@ -1,5 +1,7 @@
 from flask import Flask
 
+# banco de dados
+banco_de_dados = "banco_de_dados.db"
 
 app = Flask(__name__)
 #app.config['HOST'] = '127.0.0.1'

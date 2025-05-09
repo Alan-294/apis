@@ -1,17 +1,12 @@
 from flask import jsonify, request
-import sqlite3
-
-# Função para conectar ao banco de dados
-def conectar_banco():
-    conexao = sqlite3.connect("banco_de_dados.db")
-    conexao.execute("PRAGMA foreign_keys = ON")
-    return conexao
+from .BancoSQLite import BancoSQLite
 
 # Função principal para gerenciar turmas
 def apiTurma():
     metodo = request.method
-    conexao = conectar_banco()
-    cursor = conexao.cursor()
+    BD = BancoSQLite()
+    BD.conectar_banco()
+    cursor = BD.conexao.cursor()
 
     try:
         if metodo == "GET":
@@ -41,8 +36,7 @@ def apiTurma():
                             for turma in todasAsTurmas
                         ]
                         return jsonify(turmas_list), 200
-                    
-                    
+                                      
         # Adicionar uma nova turma      
         elif metodo == "POST":
             dados = request.get_json()
@@ -50,7 +44,7 @@ def apiTurma():
                 "INSERT INTO turmas (nome, turno, professor_id, ativo) VALUES (?, ?, ?, ?)",
                 (dados['nome'], dados['turno'], dados['professor_id'], True)
             )
-            conexao.commit()
+            BD.conexao.commit()
             return jsonify({
                 "mensagem": "Turma adicionada com sucesso",
                 "turma_adicionada": {
@@ -70,7 +64,7 @@ def apiTurma():
                 "UPDATE turmas SET nome = ?, turno = ?, professor_id = ?, ativo = ? WHERE id = ?",
                 (dados['nome'], dados['turno'], int(dados['professor_id']), dados['ativo'], int(id_turma))
             )
-            conexao.commit()
+            BD.conexao.commit()
             if cursor.rowcount == 0:
                 return jsonify({"mensagem": "Turma não encontrada"}), 404
             return jsonify({"mensagem": "Turma atualizada com sucesso"}), 200
@@ -79,7 +73,7 @@ def apiTurma():
         elif metodo == "DELETE":  
             id_turma = request.args.get('id')
             cursor.execute("DELETE FROM turmas WHERE id = ?", (id_turma,))
-            conexao.commit()
+            BD.conexao.commit()
             if cursor.rowcount == 0:
                 return jsonify({"mensagem": "Turma não encontrada"}), 404
             return jsonify({"mensagem": "Turma excluída com sucesso"}), 200
@@ -88,4 +82,4 @@ def apiTurma():
             return jsonify({"mensagem": "Método não permitido"}), 405
     finally:
         cursor.close()
-        conexao.close()
+        BD.conexao.close()
