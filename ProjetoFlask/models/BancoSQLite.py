@@ -106,12 +106,24 @@ def inicializar_banco():
     conexao.close()
     print("Banco de dados inicializado com sucesso!")
 
-def chamarBanco():
-    conexao = sqlite3.connect(bd)
+
+class BancoSQLite:
+    def __init__(self):
+        self.conexao = sqlite3.connect(bd)
+        self.conexao.execute("PRAGMA foreign_keys = ON")
+        self.conexao.row_factory = sqlite3.Row
+        self.cursor = self.conexao.cursor()
+        print("Conexão com o banco de dados estabelecida.")
+
+    def close(self):
+        if self.conexao:
+            self.conexao.close()
+            print("Conexão com o banco de dados fechada.")
+
+    def conectar_banco(self):
+        return sqlite3.connect(bd)
     
-    return conexao
-
-
+        
 
 
 

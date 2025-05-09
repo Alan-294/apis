@@ -1,11 +1,6 @@
 import sqlite3
 from flask import jsonify, request
-
-# Função para conectar ao banco de dados
-def conectar_banco():
-    conexao = sqlite3.connect("banco_de_dados.db")
-    conexao.row_factory = sqlite3.Row  # Permite acessar os resultados como dicionários
-    return conexao
+from .BancoSQLite import BancoSQLite
 
 # Adicionar um novo aluno
 def adiciona_aluno(aluno):
@@ -26,8 +21,9 @@ def adiciona_aluno(aluno):
     except ValueError:
         return jsonify({"erro": "Idade, turma_id e notas devem ser números válidos"}), 400
     
-    conexao = conectar_banco()
-    cursor = conexao.cursor()
+    BD = BancoSQLite()
+    BD.conectar_banco()
+    cursor = BD.conexao.cursor()
 
     try:
         cursor.execute('''
@@ -35,15 +31,15 @@ def adiciona_aluno(aluno):
             VALUES (?, ?, ?, ?, ?, ?)
         ''', (aluno['nome'], idade, turma_id, nota1, nota2, media_final))
 
-        conexao.commit()
+        BD.conexao.commit()
         aluno_id = cursor.lastrowid
 
     except sqlite3.Error as e:
-        conexao.rollback()
+        BD.conexao.rollback()
         return jsonify({"erro": f"Erro ao inserir no banco de dados: {str(e)}"}), 500
 
     finally:
-        conexao.close()
+        BD.conexao.close()
 
     aluno['id'] = aluno_id
     aluno['media_final'] = media_final
@@ -51,24 +47,26 @@ def adiciona_aluno(aluno):
 
 # Listar todos os alunos
 def lista_alunos():
-    conexao = conectar_banco()
-    cursor = conexao.cursor()
+    BD = BancoSQLite()
+    BD.conectar_banco()
+    cursor = BD.conexao.cursor()
 
     # Consulta todos os alunos
     cursor.execute('SELECT * FROM alunos')
     alunos = [dict(row) for row in cursor.fetchall()]  # Converte os resultados em uma lista de dicionários
-    conexao.close()
+    BD.conexao.close()
 
     return jsonify(alunos)
 
 # Consultar um aluno por ID
 def consulta_aluno(aluno_id):
-    conexao = conectar_banco()
-    cursor = conexao.cursor()
+    BD = BancoSQLite()
+    BD.conectar_banco()
+    cursor = BD.conexao.cursor()
 
     cursor.execute('SELECT * FROM alunos WHERE id = ?', (aluno_id,))
     aluno = cursor.fetchone()
-    conexao.close()
+    BD.conexao.close()
 
     if aluno:
         return jsonify(dict(aluno)), 200
@@ -77,8 +75,9 @@ def consulta_aluno(aluno_id):
 
 # Atualizar um aluno
 def update_aluno(id_aluno, novo_aluno):
-    conexao = conectar_banco()
-    cursor = conexao.cursor()
+    BD = BancoSQLite()
+    BD.conectar_banco()
+    cursor = BD.conexao.cursor()
 
     cursor.execute('''
         UPDATE alunos
@@ -94,8 +93,8 @@ def update_aluno(id_aluno, novo_aluno):
         id_aluno
     ))
 
-    conexao.commit()
-    conexao.close()
+    BD.conexao.commit()
+    BD.conexao.close()
 
     if cursor.rowcount > 0:
         return jsonify({'mensagem': 'Aluno atualizado com sucesso'}), 200
@@ -104,12 +103,13 @@ def update_aluno(id_aluno, novo_aluno):
     
 # Deletar um aluno
 def deletar_aluno(aluno_id):
-    conexao = conectar_banco()
-    cursor = conexao.cursor()
+    BD = BancoSQLite()
+    BD.conectar_banco()
+    cursor = BD.conexao.cursor()
 
     cursor.execute('DELETE FROM alunos WHERE id = ?', (aluno_id,))
-    conexao.commit()
-    conexao.close()
+    BD.conexao.commit()
+    BD.conexao.close()
 
     if cursor.rowcount > 0:
         return jsonify({'mensagem': 'Usuário removido com sucesso'})
